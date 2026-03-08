@@ -92,6 +92,7 @@ $phrases = @{
     "flaps_full"                                = "Flaps full"
     "config_1_plus_f"                           = "Config one plus f"
     "config_2"                                  = "Config two"
+    "config_3"                                  = "Config three"
     "walkaround"                                = "I'll perform the walkaround now"
     "walkaround_completed"                      = "Walkaround completed, all good no issues found"
     "0"                                         = "Zero"
@@ -123,6 +124,8 @@ $phrases = @{
     "check_spoilers"                            = "Check spoilers"
     "cabin_takeoff"                             = "Cabin crew, please be seated for takeoff"
     "cabin_landing"                             = "Cabin crew, please be seated for landing"
+    "are_you_sure"                              = "Are you sure?"
+    "packs_1_and_2_on"                          = "Packs one and two on"
 }
 
 # Derive folder name from voice: "en-US-JennyNeural" -> "Jenny"

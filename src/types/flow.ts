@@ -7,6 +7,7 @@ export interface FlowStep {
   wait_ms?: number
   skip_verify?: boolean
   sound?: string
+  sound_on_execute?: string // played only when the step actually writes a value (not skipped)
 }
 
 export interface Flow {

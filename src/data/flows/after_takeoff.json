@@ -31,7 +31,8 @@
       "label": "pack 2",
       "read": "(L:INI_AIR_PACK2_BUTTON)",
       "on": "1 (>L:INI_AIR_PACK2_BUTTON)",
-      "expect": 1
+      "expect": 1,
+      "sound_on_execute": "packs_1_and_2_on.ogg"
     },
     {
       "label": "Nose Wheel Light",

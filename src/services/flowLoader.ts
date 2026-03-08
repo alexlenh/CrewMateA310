@@ -6,9 +6,13 @@ import beforeTakeoff from "@/data/flows/before_takeoff.json"
 import beforeWalkaround from "@/data/flows/before_walkaround.json"
 import clearLeft from "@/data/flows/clear_left.json"
 import climbTenThousand from "@/data/flows/climb_ten_thousand_flow.json"
+import curtains_close from "@/data/flows/curtains_close.json"
+import curtains_open from "@/data/flows/curtains_open.json"
 import descTenThousand from "@/data/flows/desc_ten_thousand_flow.json"
 import electricPowerUp from "@/data/flows/electric_power_up.json"
 import shutdown from "@/data/flows/shutdown.json"
+import table_close from "@/data/flows/table_close.json"
+import table_open from "@/data/flows/table_open.json"
 import { usePerformanceStore } from "@/store/performanceStore"
 import type { Flow, FlowStep } from "@/types/flow"
 
@@ -23,7 +27,11 @@ export const allFlows: Flow[] = [
   climbTenThousand,
   descTenThousand,
   afterLanding,
-  shutdown
+  shutdown,
+  curtains_open,
+  curtains_close,
+  table_open,
+  table_close
 ] as Flow[]
 
 export function getFlowById(id: string): Flow | undefined {
@@ -41,11 +49,14 @@ function getTemplateVars(): Record<string, string> {
   }
   vars["flaps"] = flapsMap[takeoff.flaps] ?? "1"
 
-  const packsOn = takeoff.packs !== "off"
+  const packsOn = takeoff.packs === "on"
+  const apuPacks = takeoff.packs === "apu"
   vars["pack1_cmd"] = packsOn ? "1 (>L:INI_AIR_PACK1_BUTTON)" : "0 (>L:INI_AIR_PACK1_BUTTON)"
   vars["pack2_cmd"] = packsOn ? "1 (>L:INI_AIR_PACK2_BUTTON)" : "0 (>L:INI_AIR_PACK2_BUTTON)"
   vars["pack1_expect"] = packsOn ? "1" : "0"
   vars["pack2_expect"] = packsOn ? "1" : "0"
+  vars["apu_bleed_cmd"] = apuPacks ? "1 (>L:INI_AIR_BLEED_APU)" : "0 (>L:INI_AIR_BLEED_APU)"
+  vars["apu_bleed_expect"] = apuPacks ? "1" : "0"
 
   const antiIce = takeoff.antiIce ?? "off"
   const engAntiIce = antiIce === "oneng" || antiIce === "onengwing"

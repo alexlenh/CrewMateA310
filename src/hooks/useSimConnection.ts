@@ -21,6 +21,7 @@ const simVars: { key: string; expression: string }[] = [
   { key: "isSlewActive", expression: "(A:IS SLEW ACTIVE,Bool)" },
   { key: "throttleLever1", expression: "(A:GENERAL ENG THROTTLE LEVER POSITION:1,Number)" },
   { key: "throttleLever2", expression: "(A:GENERAL ENG THROTTLE LEVER POSITION:2,Number)" },
+  { key: "landingGear", expression: "(A:GEAR HANDLE POSITION,Position)" },
   { key: "brakeLeftPosition", expression: "(A:BRAKE LEFT POSITION,Number)" },
   { key: "parkingBrake", expression: "(A:BRAKE PARKING INDICATOR,Bool)" },
   { key: "brakeRightPosition", expression: "(A:BRAKE RIGHT POSITION,Number)" },
@@ -103,13 +104,14 @@ export function useSimConnection() {
         }
       })
 
-      /** If the app is opened while already in the cockpit (camera < 11), the Rust
-      thread emits "sim-in-flight" before the listener above is registered and the
-      event is silently dropped.  Kick off the stream immediately after the listener
-      is guaranteed to be registered so we never get stuck on the error screen.
-       */
-      void startStream()
-      startRetry()
+      // After the listener is registered, query whether we're already in the cockpit.
+      // This handles the app being opened while already in a loaded flight — the Rust
+      // side emits with a 300ms delay now, but this is a belt-and-suspenders fallback.
+      const alreadyInCockpit = await invoke<boolean>("get_in_cockpit").catch(() => false)
+      if (alreadyInCockpit) {
+        void startStream()
+        startRetry()
+      }
     }
     void setupFlightStateListener()
 

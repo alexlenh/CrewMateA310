@@ -53,7 +53,7 @@ function getA350Variant(title?: string): A350Variant | null {
   return null
 }
 
-export async function setFlaps(setting: number) {
+export async function setFlaps(setting: number, skipAnnouncement = false) {
   try {
     const { telemetry, aircraftTitle } = useTelemetryStore.getState()
     const currentSpeed = telemetry?.ias ?? 0
@@ -64,40 +64,30 @@ export async function setFlaps(setting: number) {
 
     const speedLimit = flapSpeedLimits[effectiveVariant][setting]
 
-    console.log(
-      `[Flaps] Aircraft=${variant ?? "Unknown"} | IAS=${currentSpeed}kts | Flap=${setting} | Limit=${speedLimit}`,
-      telemetry
-    )
-
     if (speedLimit && currentSpeed > speedLimit) {
-      console.warn(`[Flaps] Denied: ${currentSpeed}kts exceeds ${speedLimit}kts for ${effectiveVariant}`)
       playSound("check_speed.ogg")
       return
     }
 
     const keyEvent = keyEventMap[setting]
     if (!keyEvent) {
-      console.error("[Flaps] Invalid flap setting:", setting)
       return
     }
 
     const commandExpression = `1 (>K:${keyEvent})`
 
     if (!isOnGround) {
-      playSound("speed_checked.ogg")
-
-      await delay(1000)
+      if (!skipAnnouncement) {
+        playSound("speed_checked.ogg")
+        await delay(1000)
+      }
       await simvarSet(commandExpression)
-
-      console.log(`[Flaps] Command sent: ${keyEvent} | Expression: ${commandExpression}`)
 
       await delay(1000)
       const sound = soundMap[setting]
       if (sound) playSound(sound)
     } else {
       await simvarSet(commandExpression)
-
-      console.log(`[Flaps] Command sent: ${keyEvent} | Expression: ${commandExpression}`)
 
       await delay(1000)
       const sound = soundMap[setting]

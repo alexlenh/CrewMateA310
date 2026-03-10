@@ -180,6 +180,14 @@ export function createVoiceCommands(): VoiceCommand[] {
     },
     // Seat Belts Commands
     {
+      phrases: ["Seat belts off please", "Seat belts off"],
+      action: () => {
+        playSound("check.ogg")
+        setSeatBelts(2)
+      },
+      description: "Turns off seat belts"
+    },
+    {
       phrases: ["Seat belts on please", "Seat belts on"],
       action: () => {
         playSound("check.ogg")
@@ -359,6 +367,16 @@ export function createVoiceCommands(): VoiceCommand[] {
       phrases: ["secure aircraft checklist", "securing the aircraft checklist"],
       action: () => executeChecklist("secure_aircraft"),
       description: "Start secure aircraft checklist"
+    },
+    {
+      phrases: ["secure aircraft checklist", "securing the aircraft checklist"],
+      action: () => executeChecklist("secure_aircraft"),
+      description: "Start secure aircraft checklist"
+    },
+    {
+      phrases: ["departure change checklist"],
+      action: () => executeChecklist("departure_change"),
+      description: "Start departure change checklist"
     },
     {
       phrases: ["stop checklist", "abort checklist", "cancel checklist"],

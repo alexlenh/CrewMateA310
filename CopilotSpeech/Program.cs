@@ -422,6 +422,7 @@ class Program
             "left side clear",
             "clear left side",
             "taxi checklist",
+            "departure change checklist",
             "removed",
             "line up checklist",
             "runway entry procedure",
@@ -526,6 +527,8 @@ class Program
             "wipers fast intermittent",
             "seat belts on",
             "seat belts on please",
+            "seat belts off",
+            "seat belts off please",
             "seat belts auto",
             "seat belts auto please",
         };

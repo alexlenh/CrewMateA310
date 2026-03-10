@@ -92,7 +92,7 @@ export async function executeFlow(flowId: string): Promise<void> {
     return
   }
 
-  const flow: Flow = resolveFlow(rawFlow)
+  const flow: Flow = await resolveFlow(rawFlow)
 
   store.setFlow(flow)
 

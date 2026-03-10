@@ -3,6 +3,7 @@ import { executeFlow } from "@/services/flowRunner"
 import { playSound } from "@/services/playSounds"
 import { usePreflightTimerStore } from "@/store/preflightTimerStore"
 
+import { setAltitudeDial } from "./commands/altitude"
 import { setStartAPU } from "./commands/apu"
 import { setAutoPilot } from "./commands/autoPilot"
 import { setEngAntiIce } from "./commands/eng_anti_ice"
@@ -11,8 +12,10 @@ import { flightControlsCheck } from "./commands/flight_controls_check"
 import { setFlightDirector } from "./commands/flight_director"
 import { setGearHandle } from "./commands/gear"
 import { executeGoAround } from "./commands/goAround"
+import { setHeadingDial } from "./commands/heading"
 import { setLandingLights } from "./commands/landing_lights"
 import { setSeatBelts } from "./commands/seat_belts"
+import { setAirspeedDial } from "./commands/speed"
 import { setStrobeLights } from "./commands/strobe_lights"
 import { setTaxiLights } from "./commands/taxi_lights"
 import { setWingAntiIce } from "./commands/wing_anti_ice"
@@ -23,6 +26,22 @@ interface VoiceCommand {
   action: () => void | Promise<void>
   description: string
   exactMatch?: boolean
+}
+
+/**
+ * Numeric prefix commands emitted by the sidecar as a single normalized utterance.
+ * Key = the prefix string the sidecar emits (e.g. "set heading ").
+ * Value = handler receiving the parsed integer value.
+ */
+export const numericPrefixCommands: Record<string, (value: number) => void | Promise<void>> = {
+  "set heading ": (v) => setHeadingDial(v),
+  "heading select ": (v) => setHeadingDial(v),
+  "set altitude ": (v) => setAltitudeDial(v),
+  "altitude select ": (v) => setAltitudeDial(v),
+  "set flight level ": (v) => setAltitudeDial(v * 100),
+  "flight level select ": (v) => setAltitudeDial(v * 100),
+  "set speed ": (v) => setAirspeedDial(v),
+  "speed select ": (v) => setAirspeedDial(v)
 }
 
 export function createVoiceCommands(): VoiceCommand[] {

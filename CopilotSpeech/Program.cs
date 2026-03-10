@@ -34,7 +34,7 @@ class Program
     private static int silenceFrames = 0;
 
     private static readonly HashSet<string> ValidCommands = new HashSet<string>(
-        GetValidCommands().Concat(GetDigitCommands(4))
+        GetValidCommands().Concat(GetDigitCommands(4)).Concat(GetCompoundDigitPhrases())
     );
 
     static void Main(string[] args)
@@ -221,12 +221,13 @@ class Program
         if (string.IsNullOrWhiteSpace(text))
             return;
 
-        // NORMALIZE FIRST
-        text = NormalizeCommand(text);
-
-        // THEN VALIDATE
+        // VALIDATE on raw Vosk output first — ValidCommands contains the word-form
+        // strings that Vosk is constrained to (e.g. "one zero one three").
+        // Only after validation do we normalize for output (e.g. → "1013").
         if (!IsValidCommand(text))
             return;
+
+        text = NormalizeCommand(text);
 
         Console.WriteLine(
             JsonSerializer.Serialize(
@@ -272,11 +273,72 @@ class Program
             _ => text,
         };
 
+        // Try compound digit phrase first (e.g. "one zero two three set" → "1023 set")
+        var compound = TryParseCompoundDigitPhrase(text);
+        if (compound != null)
+            return compound;
+
+        // Pure digit sequence (e.g. "one zero two three" → "1023")
         var digits = TryParseDigitSequence(text);
         if (digits != null)
             return digits;
 
         return text;
+    }
+
+    static string? TryParseCompoundDigitPhrase(string text)
+    {
+        // Suffix patterns: "[digits] set" / "[digits] tons"
+        foreach (var suffix in new[] { " set", " tons" })
+        {
+            if (!text.EndsWith(suffix))
+                continue;
+
+            var numberPart = text[..^suffix.Length];
+            var digits = TryParseDigitSequence(numberPart);
+            if (digits != null)
+                return $"{digits}{suffix}"; // e.g. "1023 set", "102 tons"
+        }
+
+        // Decimal tons: "[digits] point [digits] tons"  →  "10.2 tons"
+        if (text.EndsWith(" tons"))
+        {
+            var withoutTons = text[..^" tons".Length];
+            var pointIdx = withoutTons.IndexOf(" point ");
+            if (pointIdx >= 0)
+            {
+                var intPart = TryParseDigitSequence(withoutTons[..pointIdx]);
+                var decPart = TryParseDigitSequence(withoutTons[(pointIdx + 7)..]);
+                if (intPart != null && decPart != null)
+                    return $"{intPart}.{decPart} tons"; // e.g. "10.2 tons"
+            }
+        }
+
+        // Prefix patterns: "set altitude [digits]", "set heading [digits]", etc.
+        foreach (
+            var prefix in new[]
+            {
+                "set altitude ",
+                "set heading ",
+                "set speed ",
+                "set baro ",
+                "set qnh ",
+                "set altimeter ",
+                "set flight level ",
+                "set missed approach altitude ",
+            }
+        )
+        {
+            if (!text.StartsWith(prefix))
+                continue;
+
+            var numberPart = text[prefix.Length..];
+            var digits = TryParseDigitSequence(numberPart);
+            if (digits != null)
+                return $"{prefix}{digits}"; // e.g. "set altitude 2000", "set heading 238"
+        }
+
+        return null;
     }
 
     static string? TryParseDigitSequence(string text)
@@ -314,6 +376,64 @@ class Program
     }
 
     static bool IsValidCommand(string text) => ValidCommands.Contains(text);
+
+    static IEnumerable<string> GetCompoundDigitPhrases()
+    {
+        var seqs4 = GetDigitSequenceList(maxDigits: 4);
+        var seqs2 = GetDigitSequenceList(maxDigits: 2);
+
+        // "[digits] set"  e.g. "one zero two three set"
+        // "[digits] tons" e.g. "nine tons"
+        var suffixes = new[] { "set", "tons" };
+        foreach (var seq in seqs4)
+        foreach (var suffix in suffixes)
+            yield return $"{seq} {suffix}";
+
+        // "[digits] point [digits] tons"  e.g. "nine point five tons"
+        foreach (var intSeq in seqs2)
+        foreach (var decSeq in seqs2)
+            yield return $"{intSeq} point {decSeq} tons";
+
+        // Prefix patterns: "set altitude [digits]", "set heading [digits]", etc.
+        var prefixes = new[]
+        {
+            "set altitude",
+            "set heading",
+            "set speed",
+            "set baro",
+            "set qnh",
+            "set altimeter",
+            "set flight level",
+            "set missed approach altitude",
+        };
+        foreach (var seq in seqs4)
+        foreach (var prefix in prefixes)
+            yield return $"{prefix} {seq}";
+    }
+
+    static List<string> GetDigitSequenceList(int maxDigits)
+    {
+        var digits = new[]
+        {
+            "zero",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "niner",
+        };
+
+        var results = new List<string>(digits);
+        for (int length = 2; length <= maxDigits; length++)
+            BuildDigitSequences(digits, length, new List<string>(), results);
+
+        return results;
+    }
 
     static IEnumerable<string> GetDigitCommands(int maxDigits)
     {
@@ -531,5 +651,17 @@ class Program
             "seat belts off please",
             "seat belts auto",
             "seat belts auto please",
+            "set heading",
+            "heading select",
+            "set altitude",
+            "altitude select",
+            "set flight level",
+            "flight level select",
+            "set speed",
+            "speed select",
+            "set baro",
+            "set qnh",
+            "set altimeter",
+            "set missed approach altitude",
         };
 }

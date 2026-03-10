@@ -2,7 +2,7 @@ import { listen } from "@tauri-apps/api/event"
 import { useEffect, useRef, useState } from "react"
 
 import { useChecklistStore } from "@/store/checklistStore"
-import { createVoiceCommands } from "@/voice/voiceCommands"
+import { createVoiceCommands, numericPrefixCommands } from "@/voice/voiceCommands"
 
 type SpeechRecognizedPayload = {
   type?: string
@@ -42,12 +42,29 @@ export function useSpeechCommands({ voiceEnabled }: UseSpeechCommandsOptions) {
       setRecognizedText(spokenText)
       setIsValidCommand(!!matchedCommand)
 
-      if (!matchedCommand) return
+      if (matchedCommand) {
+        try {
+          await matchedCommand.action()
+        } catch (error) {
+          console.error(`Voice command error: ${String(error)}`)
+        }
+        return
+      }
 
-      try {
-        await matchedCommand.action()
-      } catch (error) {
-        console.error(`Voice command error: ${String(error)}`)
+      // Numeric prefix commands: sidecar emits e.g. "set heading 238"
+      for (const [prefix, handler] of Object.entries(numericPrefixCommands)) {
+        if (spokenText.startsWith(prefix)) {
+          const value = parseInt(spokenText.slice(prefix.length), 10)
+          if (!isNaN(value)) {
+            setIsValidCommand(true)
+            try {
+              await handler(value)
+            } catch (error) {
+              console.error(`Numeric command error: ${String(error)}`)
+            }
+          }
+          return
+        }
       }
     })
 

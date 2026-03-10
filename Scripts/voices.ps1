@@ -132,6 +132,7 @@ $phrases = @{
     "rwy&sid"                                   = "Runway and seed"
     "fcualt"                                    = "FCU altitude"
     "departure_change_checklist_completed"      = "Departure change checklist completed"
+    "one_to_go"                                 = "One thousand to go"
 }
 
 # Derive folder name from voice: "en-US-JennyNeural" -> "Jenny"

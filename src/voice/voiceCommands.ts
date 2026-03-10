@@ -207,7 +207,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers off please", "Wipers off"],
       action: () => {
-        playSound("check.ogg")
         setWipers(3)
       },
       description: "Turns off wipers"
@@ -215,7 +214,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers slow please", "Wipers slow"],
       action: () => {
-        playSound("check.ogg")
         setWipers(4)
       },
       description: "Sets wipers to slow speed"
@@ -223,7 +221,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers fast please", "Wipers fast"],
       action: () => {
-        playSound("check.ogg")
         setWipers(5)
       },
       description: "Sets wipers to fast speed"
@@ -231,7 +228,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers slow intermittent"],
       action: () => {
-        playSound("check.ogg")
         setWipers(0)
       },
       description: "Sets wipers to slow intermittent speed"
@@ -239,7 +235,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers medium intermittent"],
       action: () => {
-        playSound("check.ogg")
         setWipers(1)
       },
       description: "Sets wipers to medium intermittent speed"
@@ -247,7 +242,6 @@ export function createVoiceCommands(): VoiceCommand[] {
     {
       phrases: ["Wipers fast intermittent"],
       action: () => {
-        playSound("check.ogg")
         setWipers(2)
       },
       description: "Sets wipers to fast intermittent speed"

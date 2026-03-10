@@ -44,7 +44,6 @@ const simVars: { key: string; expression: string }[] = [
   { key: "foAltimeterSettingMB", expression: "(A:KOHLSMAN SETTING MB:2, Millibars)" },
   { key: "foAltimeterSettingHG", expression: "(A:KOHLSMAN SETTING HG:2, inHg)" },
   { key: "totalFuelQuantityWeight", expression: "(A:FUEL TOTAL QUANTITY WEIGHT, Pounds)" },
-  { key: "totalFuelQuantityWeight", expression: "(A:FUEL TOTAL QUANTITY WEIGHT, Pounds)" },
   { key: "iniEngAntiIce1State", expression: "(L:INI_ENG_ANTI_ICE1_STATE)" },
   { key: "iniEngAntiIce2State", expression: "(L:INI_ENG_ANTI_ICE2_STATE)" },
   { key: "iniWingAntiIce1State", expression: "(L:INI_WING_ANTI_ICE1_STATE)" },
@@ -54,7 +53,8 @@ const simVars: { key: string; expression: string }[] = [
   { key: "flapsIndex", expression: "(A:FLAPS HANDLE INDEX,Number)" },
   { key: "mixture1", expression: "(L:INI_MIXTURE_RATIO1_HANDLE)" },
   { key: "mixture2", expression: "(L:INI_MIXTURE_RATIO2_HANDLE)" },
-  { key: "spoilersArmed", expression: "(L:INI_SPOILERS_ARMED)" }
+  { key: "spoilersArmed", expression: "(L:INI_SPOILERS_ARMED)" },
+  { key: "fcu_alt", expression: "(L:INI_ALTITUDE_DIAL)" }
 ]
 
 const RETRY_INTERVAL_MS = 5000

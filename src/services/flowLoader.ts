@@ -1,3 +1,4 @@
+import { simvarGet } from "@/API/simvarApi"
 import afterLanding from "@/data/flows/after_landing.json"
 import afterStart from "@/data/flows/after_start.json"
 import afterTakeoff from "@/data/flows/after_takeoff.json"
@@ -13,7 +14,6 @@ import electricPowerUp from "@/data/flows/electric_power_up.json"
 import shutdown from "@/data/flows/shutdown.json"
 import table_close from "@/data/flows/table_close.json"
 import table_open from "@/data/flows/table_open.json"
-import { simvarGet } from "@/API/simvarApi"
 import { usePerformanceStore } from "@/store/performanceStore"
 import type { Flow, FlowStep } from "@/types/flow"
 

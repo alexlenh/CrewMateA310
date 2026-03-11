@@ -17,7 +17,7 @@
 
 ## Quick Links
 
-- [Contribution Guidelines](.github/CONTRIBUTING.md)
+- [Contribution Guidelines](.github/Contributing.md)
 - [License](LICENSE)
 
 ---

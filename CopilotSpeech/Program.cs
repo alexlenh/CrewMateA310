@@ -390,9 +390,23 @@ class Program
             yield return $"{seq} {suffix}";
 
         // "[digits] point [digits] tons"  e.g. "nine point five tons", "one zero zero point two tons"
+        var singleDigits = new[]
+        {
+            "zero",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "niner",
+        };
         foreach (var intSeq in seqs3)
-        foreach (var decSeq in seqs3)
-            yield return $"{intSeq} point {decSeq} tons";
+        foreach (var dec in singleDigits)
+            yield return $"{intSeq} point {dec} tons";
 
         // Prefix patterns: "set altitude [digits]", "set heading [digits]", etc.
         var prefixes = new[]

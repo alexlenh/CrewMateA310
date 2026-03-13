@@ -19,6 +19,7 @@ import { setSelHeading } from "./commands/heading"
 import { setManagedHeading } from "./commands/heading"
 import { setLandingLights } from "./commands/landing_lights"
 import { setSeatBelts } from "./commands/seat_belts"
+import { setStdBaro } from "./commands/setStdBaro"
 import { setAirspeedDial } from "./commands/speed"
 import { setSelSpeed } from "./commands/speed"
 import { setManagedSpeed } from "./commands/speed"
@@ -26,7 +27,6 @@ import { setStrobeLights } from "./commands/strobe_lights"
 import { setTaxiLights } from "./commands/taxi_lights"
 import { setWingAntiIce } from "./commands/wing_anti_ice"
 import { setWipers } from "./commands/wipers"
-import { setStdBaro } from "./commands/setStdBaro"
 
 interface VoiceCommand {
   phrases: string[]

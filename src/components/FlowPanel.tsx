@@ -1,33 +1,14 @@
-import { Play, Square, Check, X, SkipForward, Loader2 } from "lucide-react"
+import { Play, Square } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { allFlows } from "@/services/flowLoader"
 import { executeFlow, abortFlow } from "@/services/flowRunner"
 import { useFlowStore } from "@/store/flowStore"
-import type { StepStatus } from "@/types/flow"
-
-function StepStatusIcon({ status }: { status: StepStatus }) {
-  switch (status) {
-    case "done":
-      return <Check className="w-3 h-3 text-emerald-400" />
-    case "skipped":
-      return <SkipForward className="w-3 h-3 text-slate-400" />
-    case "failed":
-      return <X className="w-3 h-3 text-red-400" />
-    case "executing":
-    case "verifying":
-      return <Loader2 className="w-3 h-3 text-cyan-400 animate-spin" />
-    default:
-      return <div className="w-3 h-3 rounded-full border border-slate-600" />
-  }
-}
 
 export function FlowPanel() {
-  const { currentFlow, currentStepIndex, stepStatuses, executionState, error } = useFlowStore()
+  const { currentFlow, executionState } = useFlowStore()
   const isRunning = executionState === "running"
-  const totalSteps = currentFlow?.steps.length ?? 0
-  const completedSteps = stepStatuses.filter((s) => s === "done" || s === "skipped").length
 
   const [selectedFlowId, setSelectedFlowId] = useState<string | null>(allFlows[0]?.id ?? null)
 
@@ -39,13 +20,14 @@ export function FlowPanel() {
     <div className="mt-1 space-y-1">
       {/* Flow selector + play/stop */}
       <div className="flex items-center gap-1.5">
-        <span className="text-amber-400 text-[10px] font-mono shrink-0">Flow</span>
+        <span className="text-amber-400 text-xs font-mono shrink-0">Flow</span>
+
         <select
           aria-label="Select flow"
           value={selectedFlowId ?? ""}
           onChange={(e) => setSelectedFlowId(e.target.value || null)}
           disabled={isRunning && currentFlow?.id !== selectedFlowId}
-          className="flex-1 min-w-0 h-6 px-1.5 text-[10px] bg-transparent border border-slate-700/50 text-slate-200 rounded"
+          className="flex-1 min-w-0 h-6 px-1.5 text-xs bg-transparent border border-slate-700/50 text-slate-200 rounded"
         >
           {allFlows.map((flow) => (
             <option key={flow.id} value={flow.id} className="bg-slate-900 text-slate-200">
@@ -63,7 +45,7 @@ export function FlowPanel() {
             }
           }}
           disabled={isRunning && currentFlow?.id !== selectedFlowId}
-          className={`h-6 px-2 text-[10px] bg-transparent border border-slate-700/50 hover:bg-amber-400/10 transition shrink-0 ${
+          className={`h-6 px-2 text-xs bg-transparent border border-slate-700/50 hover:bg-amber-400/10 transition shrink-0 ${
             isRunning && currentFlow?.id === selectedFlowId ? "border-amber-400 bg-amber-400/10" : ""
           } ${isRunning && currentFlow?.id !== selectedFlowId ? "opacity-40" : ""}`}
         >
@@ -75,61 +57,13 @@ export function FlowPanel() {
         </Button>
       </div>
 
-      {/* Active flow progress */}
-      {currentFlow && executionState !== "idle" && (
-        <div className="border border-slate-700/50 rounded-lg p-3 bg-slate-900/50">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-200">{currentFlow.name}</span>
-            <span className="text-xs text-slate-400">
-              {completedSteps}/{totalSteps} steps
-            </span>
-          </div>
-
-          {/* Progress bar */}
-          <div className="w-full h-1.5 bg-slate-800 rounded-full mb-3 overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-300 ${
-                executionState === "completed"
-                  ? "bg-emerald-400"
-                  : executionState === "error"
-                    ? "bg-red-400"
-                    : executionState === "aborted"
-                      ? "bg-amber-400"
-                      : "bg-cyan-400"
-              }`}
-              style={{ width: `${totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0}%` }}
-            />
-          </div>
-
-          {/* Step list */}
-          <div className="space-y-1 max-h-48 overflow-y-auto">
-            {currentFlow.steps.map((step, i) => (
-              <div
-                key={i}
-                className={`flex items-center gap-2 text-xs py-0.5 px-1 rounded ${
-                  i === currentStepIndex && isRunning ? "bg-slate-800/80" : ""
-                }`}
-              >
-                <StepStatusIcon status={stepStatuses[i] ?? "pending"} />
-                <span
-                  className={
-                    stepStatuses[i] === "done" || stepStatuses[i] === "skipped"
-                      ? "text-slate-500"
-                      : i === currentStepIndex && isRunning
-                        ? "text-cyan-300"
-                        : "text-slate-400"
-                  }
-                >
-                  {step.label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Status footer */}
-          {executionState === "completed" && <p className="text-xs text-emerald-400 mt-2">Flow completed</p>}
-          {executionState === "error" && <p className="text-xs text-red-400 mt-2">Error: {error}</p>}
-          {executionState === "aborted" && <p className="text-xs text-amber-400 mt-2">Flow aborted</p>}
+      {/* Running indicator */}
+      {currentFlow && isRunning && (
+        <div className="flex items-center gap-2 py-1">
+          <div className="w-1.5 h-1.5 bg-orange-400/60 rounded-full animate-pulse" />
+          <span className="font-normal text-xs tracking-wide opacity-90 text-slate-400">
+            Flow {currentFlow.name} running
+          </span>
         </div>
       )}
     </div>

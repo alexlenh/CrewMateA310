@@ -40,13 +40,13 @@ export function ChecklistPanel() {
     <div className="mt-1 space-y-1">
       {/* Selector row */}
       <div className="flex items-center gap-1.5">
-        <span className="text-amber-400 text-[10px] font-mono shrink-0">CL</span>
+        <span className="text-amber-400 text-xs font-mono shrink-0">CL</span>
         <select
           aria-label="Select checklist"
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
           disabled={isRunning && currentChecklist?.id !== selectedId}
-          className="flex-1 min-w-0 h-6 px-1.5 text-[10px] bg-transparent border border-slate-700/50 text-slate-200 rounded"
+          className="flex-1 min-w-0 h-6 px-1.5 text-xs bg-transparent border border-slate-700/50 text-slate-200 rounded"
         >
           {allChecklists.map((cl) => (
             <option key={cl.id} value={cl.id} className="bg-slate-900 text-slate-200">
@@ -64,7 +64,7 @@ export function ChecklistPanel() {
             }
           }}
           disabled={isRunning && currentChecklist?.id !== selectedId}
-          className={`h-6 px-2 text-[10px] bg-transparent border border-slate-700/50 hover:bg-amber-400/10 transition shrink-0 ${
+          className={`h-6 px-2 text-xs bg-transparent border border-slate-700/50 hover:bg-amber-400/10 transition shrink-0 ${
             isRunning && currentChecklist?.id === selectedId ? "border-amber-400 bg-amber-400/10" : ""
           } ${isRunning && currentChecklist?.id !== selectedId ? "opacity-40" : ""}`}
         >
@@ -99,7 +99,7 @@ export function ChecklistPanel() {
 
           {/* Silent mode */}
           {isSilent && isRunning && (
-            <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
               <Loader2 className="w-2.5 h-2.5 animate-spin text-amber-400 shrink-0" />
               <span>Checking…</span>
             </div>
@@ -110,7 +110,7 @@ export function ChecklistPanel() {
             <div className="space-y-0.5">
               {currentChecklist.items.map((item, i) =>
                 stepStatuses[i] === "failed" ? (
-                  <div key={i} className="flex items-center gap-1 text-[10px] text-red-400">
+                  <div key={i} className="flex items-center gap-1 text-xs text-red-400">
                     <X className="w-2.5 h-2.5 shrink-0" />
                     <span>{item.label}</span>
                   </div>
@@ -125,9 +125,9 @@ export function ChecklistPanel() {
               <div className="flex items-center justify-between gap-1">
                 <div className="flex items-center gap-1 min-w-0">
                   <Mic className="w-2.5 h-2.5 text-amber-400 shrink-0" />
-                  <span className="text-[11px] font-medium text-amber-300 truncate">{activeItem.label}</span>
+                  <span className="text-xs font-medium text-amber-300 truncate">{activeItem.label}</span>
                 </div>
-                <span className="text-[10px] text-slate-500 shrink-0">
+                <span className="text-xs text-slate-500 shrink-0">
                   {completedItems}/{totalItems}
                 </span>
               </div>
@@ -136,7 +136,7 @@ export function ChecklistPanel() {
                   {activeResponses.map((r) => (
                     <span
                       key={r}
-                      className="px-1.5 py-px rounded text-[9px] font-mono bg-slate-800 text-slate-400 border border-slate-700"
+                      className="px-1.5 py-px rounded text-xs font-mono bg-slate-800 text-slate-400 border border-slate-700"
                     >
                       {r}
                     </span>
@@ -148,7 +148,7 @@ export function ChecklistPanel() {
 
           {/* Normal mode completed/aborted/failed one-liner */}
           {!isRunning && (
-            <div className="flex items-center gap-1 text-[10px]">
+            <div className="flex items-center gap-1 text-xs">
               {executionState === "completed" && (
                 <>
                   <Check className="w-2.5 h-2.5 text-emerald-400" />

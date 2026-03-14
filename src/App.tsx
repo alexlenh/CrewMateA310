@@ -2,6 +2,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window"
 import { useEffect } from "react"
 
 import { ChecklistPanel } from "@/components/ChecklistPanel"
+import { ConnectionError } from "@/components/connectionError"
 import { FlowPanel } from "@/components/FlowPanel"
 import { Footer } from "@/components/Footer"
 import { IconToolbar } from "@/components/IconToolbar"
@@ -50,16 +51,10 @@ function App() {
 
   return (
     <div className="flex  bg-black flex-col min-h-screen">
-      <main className="flex-1  text-white p-2">
+      <main className="flex-1 text-white p-2">
         <div className="max-w-6xl mx-auto">
           {!connected ? (
-            <div className="flex flex-col items-center justify-center mb-6 py-5">
-              <div className="relative flex items-center justify-center mb-4">
-                <div className="w-10 h-10 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-              <p className="text-cyan-200 text-sm opacity-80">Waiting for simulator to start...</p>
-              <span className="text-xs text-cyan-400/70 mt-3 animate-pulse">Auto-reconnecting</span>
-            </div>
+            <ConnectionError />
           ) : (
             <>
               <IconToolbar
@@ -67,7 +62,6 @@ function App() {
                 onToggleVoice={() => setVoiceEnabled(!voiceEnabled)}
                 voiceDisabled={!voskModelAvailable || !voskModelSelected}
               />
-
               {voskModelAvailable === false || voskModelSelected === false ? (
                 <NoVoiceModel voskModelAvailable={voskModelAvailable ?? false} />
               ) : (
@@ -78,7 +72,6 @@ function App() {
                       {currentEvent}
                     </span>
                   )}
-
                   <FlowPanel />
                   <ChecklistPanel />
                 </>

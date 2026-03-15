@@ -3,6 +3,13 @@
   "name": "Open Curtains",
   "steps": [
     {
+      "label": "Cockpit Door Open",
+      "read": "(L:INI_COCKPIT_DOOR)",
+      "on": "1 (>L:INI_COCKPIT_DOOR)",
+      "expect": 1
+    },
+
+    {
       "label": "Curtain 1 Open",
       "read": "(L:INI_SKEL_CAB_CURTAIN1_VIS)",
       "on": "1 (>L:INI_SKEL_CAB_CURTAIN1_VIS)",

@@ -12,7 +12,18 @@
       "label": "Flaps {flaps}",
       "read": "(A:FLAPS HANDLE INDEX,Number)",
       "on": "(>K:FLAPS_{flaps})",
-      "expect": "{flaps}"
+      "expect": "{flaps}",
+      "only_if": {
+        "option": "takeoff.antiIce",
+        "one_of": ["off"]
+      }
+    },
+    {
+      "label": "Reset Rudder Trim",
+      "read": "(L:RUDDER_TRIM_RESET_REQ)",
+      "on": "1 (>L:RUDDER_TRIM_RESET_REQ)",
+      "expect": 1,
+      "skip_verify": true
     },
     {
       "label": "Engine 1 Anti Ice",
@@ -41,8 +52,8 @@
     {
       "label": "Dome off",
       "read": "(L:INI_CKPT_LT_DOME)",
-      "on": "25 (>L:INI_CKPT_LT_DOME)",
-      "expect": 25
+      "on": "0 (>L:INI_CKPT_LT_DOME)",
+      "expect": 0
     }
   ]
 }

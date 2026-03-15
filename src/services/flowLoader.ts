@@ -72,6 +72,22 @@ async function getTemplateVars(): Promise<Record<string, string>> {
   vars["anti_ice_eng2_expect"] = engAntiIce ? "1" : "0"
   vars["anti_ice_wing_expect"] = wingAntiIce ? "1" : "0"
 
+  const landingAntiIceOn = (landing.antiIce ?? "off") === "oneng"
+  vars["landing_anti_ice_eng1_cmd"] = landingAntiIceOn
+    ? "1 (>L:INI_ENG_ANTI_ICE1_STATE)"
+    : "0 (>L:INI_ENG_ANTI_ICE1_STATE)"
+  vars["landing_anti_ice_eng2_cmd"] = landingAntiIceOn
+    ? "1 (>L:INI_ENG_ANTI_ICE2_STATE)"
+    : "0 (>L:INI_ENG_ANTI_ICE2_STATE)"
+  vars["landing_anti_ice_eng1_expect"] = landingAntiIceOn ? "1" : "0"
+  vars["landing_anti_ice_eng2_expect"] = landingAntiIceOn ? "1" : "0"
+
+  const landingApuAutoStart = (landing.apuStart ?? "auto") === "auto"
+  vars["landing_apu_master_cmd"] = landingApuAutoStart ? "1 (>L:INI_APU_MASTER_SWITCH)" : "0 (>L:INI_APU_MASTER_SWITCH)"
+  vars["landing_apu_master_expect"] = landingApuAutoStart ? "1" : "0"
+  vars["landing_apu_start_cmd"] = landingApuAutoStart ? "1 (>L:INI_APU_START_BUTTON)" : "0 (>L:INI_APU_START_BUTTON)"
+  vars["landing_apu_start_expect"] = landingApuAutoStart ? "1" : "0"
+
   const landFlapsMap: Record<string, string> = {
     "3": "3",
     Full: "4"
@@ -87,12 +103,25 @@ function resolveString(str: string, vars: Record<string, string>): string {
 
 export async function resolveStep(step: FlowStep, vars?: Record<string, string>): Promise<FlowStep> {
   const templateVars = vars ?? (await getTemplateVars())
+  const resolvedOnlyIf = step.only_if
+    ? {
+        ...step.only_if,
+        ...("read" in step.only_if
+          ? { read: resolveString(step.only_if.read, templateVars) }
+          : { option: resolveString(step.only_if.option, templateVars) }),
+        one_of: step.only_if.one_of.map((value) =>
+          typeof value === "string" ? resolveString(value, templateVars) : value
+        )
+      }
+    : undefined
+
   return {
     ...step,
     label: resolveString(step.label, templateVars),
     read: resolveString(step.read, templateVars),
     on: resolveString(step.on, templateVars),
-    expect: typeof step.expect === "string" ? parseFloat(resolveString(step.expect, templateVars)) || 0 : step.expect
+    expect: typeof step.expect === "string" ? parseFloat(resolveString(step.expect, templateVars)) || 0 : step.expect,
+    only_if: resolvedOnlyIf
   }
 }
 

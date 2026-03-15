@@ -6,7 +6,7 @@
       "label": "Ground Spoilers",
       "read": "(L:INI_SPOILERS_ARMED)",
       "on": "1 (>K:SPOILERS_ARM_OFF)",
-      "expect": 1,
+      "expect": 0,
       "skip_verify": true
     },
     {

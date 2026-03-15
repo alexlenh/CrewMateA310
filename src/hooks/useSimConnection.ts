@@ -12,6 +12,7 @@ import type { Telemetry } from "@/store/telemetryStore"
  * via the "telemetry_data" event at the requested interval.
  */
 const simVars: { key: string; expression: string }[] = [
+  { key: "timeOfDay", expression: "(E:TIME OF DAY,Enum)" },
   { key: "ias", expression: "(A:AIRSPEED INDICATED,Knots)" },
   { key: "alt", expression: "(A:INDICATED ALTITUDE,Feet)" },
   { key: "radioAlt", expression: "(A:PLANE ALT ABOVE GROUND,Feet)" },

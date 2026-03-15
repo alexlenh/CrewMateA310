@@ -20,6 +20,7 @@ pub struct TelemetryVariable {
 //
 // Supported read formats:
 //   (A:NAME, Unit)  →  datum="NAME",    unit="Unit"
+//   (E:NAME, Unit)  →  datum="NAME",    unit="Unit"  (environment variable)
 //   (L:NAME)        →  datum="L:NAME",  unit="number"
 //
 // Supported write formats:
@@ -57,6 +58,19 @@ fn parse_read(expr: &str) -> Option<ReadVar> {
             datum: name.trim().into(),
             unit: unit.trim().into(),
         });
+    }
+    if let Some(rest) = inner.strip_prefix("E:") {
+        return if let Some((name, unit)) = rest.split_once(',') {
+            Some(ReadVar {
+                datum: name.trim().into(),
+                unit: unit.trim().into(),
+            })
+        } else {
+            Some(ReadVar {
+                datum: rest.trim().into(),
+                unit: "Number".into(),
+            })
+        };
     }
     None
 }
@@ -393,7 +407,7 @@ fn handle_request(req: WorkerRequest, sim: &mut Option<SimVars>, stream: &mut Op
             // Always reopen — ensures fresh SimConnect handle and fresh data definitions
             // after sim reloads, aircraft changes, or app restarts.
             *sim = None;
-            match SimVars::open("CrewNate") {
+            match SimVars::open("CrewMate") {
                 Ok(c) => *sim = Some(c),
                 Err(e) => {
                     let _ = respond_to.send(Err(e.to_string()));

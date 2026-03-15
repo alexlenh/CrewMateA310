@@ -6,19 +6,35 @@
       "label": "Flaps",
       "read": "(A:FLAPS HANDLE INDEX,Number)",
       "on": "1 (>K:FLAPS_UP)",
-      "expect": 0
+      "expect": 0,
+      "only_if": {
+        "option": "landing.antiIce",
+        "one_of": ["off"]
+      }
+    },
+    {
+      "label": "Engine 1 Anti Ice",
+      "read": "(L:INI_ENG_ANTI_ICE1_STATE)",
+      "on": "{landing_anti_ice_eng1_cmd}",
+      "expect": "{landing_anti_ice_eng1_expect}"
+    },
+    {
+      "label": "Engine 2 Anti Ice",
+      "read": "(L:INI_ENG_ANTI_ICE2_STATE)",
+      "on": "{landing_anti_ice_eng2_cmd}",
+      "expect": "{landing_anti_ice_eng2_expect}"
     },
     {
       "label": "APU",
       "read": "(L:INI_APU_MASTER_SWITCH)",
-      "on": "1 (>L:INI_APU_MASTER_SWITCH)",
-      "expect": 1
+      "on": "{landing_apu_master_cmd}",
+      "expect": "{landing_apu_master_expect}"
     },
     {
-      "label": "APU",
+      "label": "APU Start",
       "read": "(L:INI_APU_START_BUTTON)",
-      "on": "1 (>L:INI_APU_START_BUTTON)",
-      "expect": 1
+      "on": "{landing_apu_start_cmd}",
+      "expect": "{landing_apu_start_expect}"
     },
     {
       "label": "Landing Lights",

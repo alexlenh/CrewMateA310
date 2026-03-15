@@ -12,9 +12,13 @@
       "label": "Flaps {flaps}",
       "read": "(A:FLAPS HANDLE INDEX,Number)",
       "on": "(>K:FLAPS_{flaps})",
-      "expect": "{flaps}"
+      "expect": "{flaps}",
+      "only_if": {
+        "option": "takeoff.antiIce",
+        "one_of": ["off"]
+      }
     },
-     {
+    {
       "label": "Reset Rudder Trim",
       "read": "(L:RUDDER_TRIM_RESET_REQ)",
       "on": "1 (>L:RUDDER_TRIM_RESET_REQ)",

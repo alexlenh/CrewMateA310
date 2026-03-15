@@ -2,8 +2,10 @@ import { simvarGet, simvarSet } from "@/API/simvarApi"
 import { getFlowById, resolveFlow } from "@/services/flowLoader"
 import { playSound, isSoundPlaying } from "@/services/playSounds"
 import { useFlowStore } from "@/store/flowStore"
+import { usePerformanceStore } from "@/store/performanceStore"
 import type { Flow } from "@/types/flow"
 import type { FlowStep } from "@/types/flow"
+import type { FlowConditionValue } from "@/types/flow"
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -59,14 +61,56 @@ function toNumber(value: number | string): number {
   return typeof value === "string" ? parseFloat(value) : value
 }
 
-function matchesValue(actual: number | null, expected: number | string): boolean {
+function matchesValue(actual: number | null, expected: FlowConditionValue): boolean {
+  if (typeof expected !== "number" && typeof expected !== "string") {
+    return false
+  }
   return actual !== null && Math.abs(actual - toNumber(expected)) < 0.5
+}
+
+function resolveFlowOption(path: string): unknown {
+  const { takeoff, landing } = usePerformanceStore.getState()
+  const root: Record<string, unknown> = { takeoff, landing }
+  return path.split(".").reduce<unknown>((acc, key) => {
+    if (!acc || typeof acc !== "object") {
+      return undefined
+    }
+    return (acc as Record<string, unknown>)[key]
+  }, root)
+}
+
+function matchesOptionValue(actual: unknown, expected: FlowConditionValue): boolean {
+  if (typeof actual === "number" && typeof expected === "number") {
+    return Math.abs(actual - expected) < 0.5
+  }
+
+  if (
+    (typeof actual === "number" || typeof actual === "string") &&
+    (typeof expected === "number" || typeof expected === "string")
+  ) {
+    const actualNum = Number(actual)
+    const expectedNum = Number(expected)
+    if (!Number.isNaN(actualNum) && !Number.isNaN(expectedNum)) {
+      return Math.abs(actualNum - expectedNum) < 0.5
+    }
+  }
+
+  return String(actual) === String(expected)
 }
 
 async function shouldExecuteStep(step: FlowStep): Promise<boolean> {
   const condition = step.only_if
   if (!condition) {
     return true
+  }
+
+  if ("option" in condition) {
+    const optionValue = resolveFlowOption(condition.option)
+    if (optionValue === undefined) {
+      console.warn(`[FlowRunner] Step "${step.label}" condition option not found: "${condition.option}"`)
+      return false
+    }
+    return condition.one_of.some((expected) => matchesOptionValue(optionValue, expected))
   }
 
   const conditionValue = await readValue(condition.read)

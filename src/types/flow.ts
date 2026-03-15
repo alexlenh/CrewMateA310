@@ -1,3 +1,9 @@
+export type FlowConditionValue = number | string | boolean
+
+export type FlowCondition =
+  | { read: string; one_of: FlowConditionValue[] }
+  | { option: string; one_of: FlowConditionValue[] }
+
 export interface FlowStep {
   label: string
   read: string
@@ -8,7 +14,7 @@ export interface FlowStep {
   skip_verify?: boolean
   sound?: string
   sound_on_execute?: string
-  only_if?: { read: string; one_of: number[] }
+  only_if?: FlowCondition
 }
 
 export interface Flow {

@@ -5,9 +5,10 @@ const CLEAR_DELAY_MS = 3000
 interface TextBarProps {
   text: string | null
   isValidCommand: boolean
+  isUnrecognized?: boolean
 }
 
-export function TextBar({ text, isValidCommand }: TextBarProps) {
+export function TextBar({ text, isValidCommand, isUnrecognized }: TextBarProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export function TextBar({ text, isValidCommand }: TextBarProps) {
       {visible && text && (
         <span
           className={`text-sm font-medium transition-colors duration-200 ${
-            isValidCommand ? "text-green-400" : "text-neutral-400"
+            isValidCommand ? "text-green-400" : isUnrecognized ? "text-amber-400" : "text-neutral-400"
           }`}
         >
           {text}

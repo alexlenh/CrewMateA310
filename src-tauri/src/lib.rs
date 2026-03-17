@@ -46,6 +46,12 @@ fn set_mic_gain(state: tauri::State<'_, SpeechBridgeState>, gain: f32) {
     state.0.send_config(&json);
 }
 
+#[tauri::command]
+fn set_vad_threshold(state: tauri::State<'_, SpeechBridgeState>, threshold: f32) {
+    let json = format!(r#"{{"vadThreshold":{:.3}}}"#, threshold);
+    state.0.send_config(&json);
+}
+
 mod windows;
 use windows::{
     close_app, open_landing_window, open_settings_window, open_takeoff_window, set_always_on_top,
@@ -207,6 +213,7 @@ pub fn run() {
             get_sound_packs,
             get_aircraft_title,
             set_mic_gain,
+            set_vad_threshold,
             get_in_cockpit,
         ])
         .run(tauri::generate_context!())

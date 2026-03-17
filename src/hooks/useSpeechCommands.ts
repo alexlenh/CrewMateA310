@@ -18,6 +18,7 @@ type UseSpeechCommandsOptions = {
 export function useSpeechCommands({ voiceEnabled }: UseSpeechCommandsOptions) {
   const [recognizedText, setRecognizedText] = useState<string | null>(null)
   const [isValidCommand, setIsValidCommand] = useState(false)
+  const [isUnrecognized, setIsUnrecognized] = useState(false)
   const commandsRef = useRef(createVoiceCommands())
 
   useEffect(() => {
@@ -28,6 +29,16 @@ export function useSpeechCommands({ voiceEnabled }: UseSpeechCommandsOptions) {
 
       const spokenText = event.payload?.text?.trim().toLowerCase()
       if (!spokenText) return
+
+      // Sidecar heard speech but it didn't match any known grammar — show in amber
+      if (event.payload?.type === "speech_unrecognized") {
+        setRecognizedText(spokenText)
+        setIsValidCommand(false)
+        setIsUnrecognized(true)
+        return
+      }
+
+      setIsUnrecognized(false)
 
       const matchedCommand = commands.find((command) =>
         command.phrases.some((phrase) => {
@@ -45,6 +56,7 @@ export function useSpeechCommands({ voiceEnabled }: UseSpeechCommandsOptions) {
       if (checklistRunning && !matchedCommand?.allowDuringChecklist) {
         setRecognizedText(spokenText)
         setIsValidCommand(false)
+        setIsUnrecognized(false)
         return
       }
 
@@ -124,5 +136,5 @@ export function useSpeechCommands({ voiceEnabled }: UseSpeechCommandsOptions) {
     }
   }, [voiceEnabled])
 
-  return { recognizedText, isValidCommand }
+  return { recognizedText, isValidCommand, isUnrecognized }
 }

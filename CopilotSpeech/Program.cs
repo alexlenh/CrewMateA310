@@ -13,7 +13,7 @@ partial class Program
     private const int SampleRate = 16000;
 
     // Silero VAD
-    private const float VadThreshold = 0.08f;
+    private static float VadThreshold = 0.08f;
     private const int VadSampleRate = 16000;
     private const int VadWindowSize = 512;
     private const int MaxSilenceFrames = 30;
@@ -106,6 +106,11 @@ partial class Program
                 {
                     AudioGain = gainProp.GetSingle();
                     Console.Error.WriteLine($"[CONFIG] Audio gain set to {AudioGain:F2}");
+                }
+                if (doc.RootElement.TryGetProperty("vadThreshold", out var vadProp))
+                {
+                    VadThreshold = vadProp.GetSingle();
+                    Console.Error.WriteLine($"[CONFIG] VAD threshold set to {VadThreshold:F3}");
                 }
             }
             catch
@@ -228,7 +233,19 @@ partial class Program
         // strings that Vosk is constrained to (e.g. "one zero one three").
         // Only after validation do we normalize for output (e.g. → "1013").
         if (!IsValidCommand(text))
+        {
+            Console.WriteLine(
+                JsonSerializer.Serialize(
+                    new
+                    {
+                        type = "speech_unrecognized",
+                        text,
+                        confidence = 0.7,
+                    }
+                )
+            );
             return;
+        }
 
         text = NormalizeCommand(text);
 

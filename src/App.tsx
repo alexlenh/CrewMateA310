@@ -38,7 +38,7 @@ function App() {
   useCallouts(takeoffVr)
   useAutoFlows()
   usePreflightTimer()
-  const { recognizedText, isValidCommand } = useSpeechCommands({ voiceEnabled })
+  const { recognizedText, isValidCommand, isUnrecognized } = useSpeechCommands({ voiceEnabled })
   useCloseConfirm()
 
   useEffect(() => {
@@ -66,7 +66,7 @@ function App() {
                 <NoVoiceModel voskModelAvailable={voskModelAvailable ?? false} />
               ) : (
                 <>
-                  <TextBar text={recognizedText} isValidCommand={isValidCommand} />
+                  <TextBar text={recognizedText} isValidCommand={isValidCommand} isUnrecognized={isUnrecognized} />
                   {currentEvent && (
                     <span className="text-xs text-cyan-300/80 font-mono animate-pulse truncate max-w-[140px]">
                       {currentEvent}

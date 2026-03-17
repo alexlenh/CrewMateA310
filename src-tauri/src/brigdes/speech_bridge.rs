@@ -74,7 +74,8 @@ impl SpeechBridge {
                 match event {
                     CommandEvent::Stdout(line) => {
                         if let Ok(value) = serde_json::from_slice::<Value>(&line) {
-                            if value["type"] == "speech" {
+                            let event_type = value["type"].as_str().unwrap_or("");
+                            if event_type == "speech" || event_type == "speech_unrecognized" {
                                 println!("[Speech] Recognized: {}", value);
                                 let _ = app_cb.emit("speech_recognized", value);
                             }

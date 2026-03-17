@@ -14,6 +14,7 @@ interface SettingsStore {
   soundPack: string
   soundVolume: number
   micGain: number
+  vadThreshold: number
   lightsControlMode: LightsControlMode
   setVoiceEnabled: (enabled: boolean) => void
   setVoiceMode: (mode: "continuous" | "ptt") => void
@@ -21,6 +22,7 @@ interface SettingsStore {
   setSoundPack: (pack: string) => void
   setSoundVolume: (volume: number) => void
   setMicGain: (gain: number) => void
+  setVadThreshold: (threshold: number) => void
   setLightsControlMode: (mode: LightsControlMode) => void
 }
 
@@ -35,6 +37,7 @@ export const useSettingsStore = create<SettingsStore>()(
       soundPack: "Jenny",
       soundVolume: 100,
       micGain: 180,
+      vadThreshold: 8,
       lightsControlMode: defaultLightsControlMode,
 
       setVoiceEnabled: (enabled) => {
@@ -74,6 +77,13 @@ export const useSettingsStore = create<SettingsStore>()(
           emit("settings-changed", { micGain: gain })
         }
       },
+      setVadThreshold: (threshold) => {
+        set({ vadThreshold: threshold })
+        invoke("set_vad_threshold", { threshold: threshold / 100 }).catch(() => {})
+        if (!isUpdatingFromEvent) {
+          emit("settings-changed", { vadThreshold: threshold })
+        }
+      },
       setLightsControlMode: (mode) => {
         set({ lightsControlMode: mode })
         if (!isUpdatingFromEvent) {
@@ -86,6 +96,9 @@ export const useSettingsStore = create<SettingsStore>()(
       onRehydrateStorage: () => (state) => {
         if (state?.micGain) {
           invoke("set_mic_gain", { gain: state.micGain / 100 }).catch(() => {})
+        }
+        if (state?.vadThreshold) {
+          invoke("set_vad_threshold", { threshold: state.vadThreshold / 100 }).catch(() => {})
         }
       }
     }
@@ -102,6 +115,7 @@ listen<
       | "setSoundPack"
       | "setSoundVolume"
       | "setMicGain"
+      | "setVadThreshold"
       | "setLightsControlMode"
     >
   >
@@ -125,6 +139,9 @@ listen<
   }
   if (event.payload.micGain !== undefined) {
     useSettingsStore.setState({ micGain: event.payload.micGain })
+  }
+  if (event.payload.vadThreshold !== undefined) {
+    useSettingsStore.setState({ vadThreshold: event.payload.vadThreshold })
   }
   if (event.payload.lightsControlMode !== undefined) {
     useSettingsStore.setState({ lightsControlMode: event.payload.lightsControlMode })

@@ -21,6 +21,8 @@ export function SettingsWindow() {
   const setSoundVolume = useSettingsStore((s) => s.setSoundVolume)
   const micGain = useSettingsStore((s) => s.micGain)
   const setMicGain = useSettingsStore((s) => s.setMicGain)
+  const vadThreshold = useSettingsStore((s) => s.vadThreshold)
+  const setVadThreshold = useSettingsStore((s) => s.setVadThreshold)
 
   const holdOnIncorrect = useChecklistStore((s) => s.holdOnIncorrect)
   const setHoldOnIncorrect = useChecklistStore((s) => s.setHoldOnIncorrect)
@@ -74,6 +76,14 @@ export function SettingsWindow() {
 
         <SliderRow label="Sound Volume" value={soundVolume} onChange={setSoundVolume} min={0} max={200} step={1} />
         <SliderRow label="Mic Gain" value={micGain} onChange={setMicGain} min={50} max={400} step={10} />
+        <SliderRow
+          label="Voice Sensitivity"
+          value={vadThreshold}
+          onChange={setVadThreshold}
+          min={1}
+          max={50}
+          step={1}
+        />
 
         <VoiceModelSettings />
 

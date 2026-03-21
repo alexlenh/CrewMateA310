@@ -13,17 +13,19 @@ interface SettingsStore {
   pttShortcut: string
   soundPack: string
   soundVolume: number
-  micGain: number
-  vadThreshold: number
+  outputDevice?: string | null
+  inputDevice?: string | null
   lightsControlMode: LightsControlMode
+  confidenceThreshold: number
   setVoiceEnabled: (enabled: boolean) => void
   setVoiceMode: (mode: "continuous" | "ptt") => void
   setPttShortcut: (shortcut: string) => void
   setSoundPack: (pack: string) => void
   setSoundVolume: (volume: number) => void
-  setMicGain: (gain: number) => void
-  setVadThreshold: (threshold: number) => void
+  setOutputDevice: (device: string | null) => void
+  setInputDevice: (device: string | null) => void
   setLightsControlMode: (mode: LightsControlMode) => void
+  setConfidenceThreshold: (threshold: number) => void
 }
 
 let isUpdatingFromEvent = false
@@ -36,9 +38,10 @@ export const useSettingsStore = create<SettingsStore>()(
       pttShortcut: "CmdOrCtrl+Shift+Space",
       soundPack: "Jenny",
       soundVolume: 100,
-      micGain: 180,
-      vadThreshold: 8,
+      outputDevice: null,
+      inputDevice: null,
       lightsControlMode: defaultLightsControlMode,
+      confidenceThreshold: 85,
 
       setVoiceEnabled: (enabled) => {
         set({ voiceEnabled: enabled })
@@ -70,18 +73,16 @@ export const useSettingsStore = create<SettingsStore>()(
           emit("settings-changed", { soundVolume: volume })
         }
       },
-      setMicGain: (gain) => {
-        set({ micGain: gain })
-        invoke("set_mic_gain", { gain: gain / 100 }).catch(() => {})
+      setOutputDevice: (device) => {
+        set({ outputDevice: device })
         if (!isUpdatingFromEvent) {
-          emit("settings-changed", { micGain: gain })
+          emit("settings-changed", { outputDevice: device })
         }
       },
-      setVadThreshold: (threshold) => {
-        set({ vadThreshold: threshold })
-        invoke("set_vad_threshold", { threshold: threshold / 100 }).catch(() => {})
+      setInputDevice: (device) => {
+        set({ inputDevice: device })
         if (!isUpdatingFromEvent) {
-          emit("settings-changed", { vadThreshold: threshold })
+          emit("settings-changed", { inputDevice: device })
         }
       },
       setLightsControlMode: (mode) => {
@@ -89,16 +90,24 @@ export const useSettingsStore = create<SettingsStore>()(
         if (!isUpdatingFromEvent) {
           emit("settings-changed", { lightsControlMode: mode })
         }
+      },
+      setConfidenceThreshold: (threshold) => {
+        set({ confidenceThreshold: threshold })
+        invoke("set_confidence_threshold", { threshold: threshold / 100 })
+        if (!isUpdatingFromEvent) {
+          emit("settings-changed", { confidenceThreshold: threshold })
+        }
       }
     }),
     {
       name: "voice-settings",
       onRehydrateStorage: () => (state) => {
-        if (state?.micGain) {
-          invoke("set_mic_gain", { gain: state.micGain / 100 }).catch(() => {})
+        if (state) invoke("set_confidence_threshold", { threshold: state.confidenceThreshold / 100 })
+        if (state && state.outputDevice) {
+          invoke("set_output_device", { device: state.outputDevice }).catch(() => {})
         }
-        if (state?.vadThreshold) {
-          invoke("set_vad_threshold", { threshold: state.vadThreshold / 100 }).catch(() => {})
+        if (state && state.inputDevice) {
+          invoke("set_input_device", { device: state.inputDevice }).catch(() => {})
         }
       }
     }
@@ -114,9 +123,8 @@ listen<
       | "setPttShortcut"
       | "setSoundPack"
       | "setSoundVolume"
-      | "setMicGain"
-      | "setVadThreshold"
       | "setLightsControlMode"
+      | "setConfidenceThreshold"
     >
   >
 >("settings-changed", (event) => {
@@ -137,14 +145,17 @@ listen<
   if (event.payload.soundVolume !== undefined) {
     useSettingsStore.setState({ soundVolume: event.payload.soundVolume })
   }
-  if (event.payload.micGain !== undefined) {
-    useSettingsStore.setState({ micGain: event.payload.micGain })
-  }
-  if (event.payload.vadThreshold !== undefined) {
-    useSettingsStore.setState({ vadThreshold: event.payload.vadThreshold })
-  }
   if (event.payload.lightsControlMode !== undefined) {
     useSettingsStore.setState({ lightsControlMode: event.payload.lightsControlMode })
+  }
+  if (event.payload.confidenceThreshold !== undefined) {
+    useSettingsStore.setState({ confidenceThreshold: event.payload.confidenceThreshold })
+  }
+  if (event.payload.outputDevice !== undefined) {
+    useSettingsStore.setState({ outputDevice: event.payload.outputDevice })
+  }
+  if (event.payload.inputDevice !== undefined) {
+    useSettingsStore.setState({ inputDevice: event.payload.inputDevice })
   }
 
   isUpdatingFromEvent = false

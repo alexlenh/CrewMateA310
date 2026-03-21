@@ -13,7 +13,8 @@ src-tauri/target
 src-tauri/gen
 
 # Copilot Speach
-CopilotSpeech/
+CopilotSpeechNew/
+SpeechTrainer/
 
 # Misc
 .DS_Store

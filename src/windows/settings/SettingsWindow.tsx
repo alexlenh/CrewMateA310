@@ -8,21 +8,27 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { VoiceModelSettings } from "@/components/VoiceModelSettings"
 import { useChecklistStore } from "@/store/checklistStore"
 import { useSettingsStore } from "@/store/settingsStore"
 
 export function SettingsWindow() {
   const [availableSoundPacks, setAvailableSoundPacks] = useState<string[]>([])
+  interface AudioDevice {
+    index: string
+    name: string
+    is_default?: boolean
+  }
+
+  const [availableOutputDevices, setAvailableOutputDevices] = useState<AudioDevice[]>([])
 
   const soundPack = useSettingsStore((s) => s.soundPack)
   const setSoundPack = useSettingsStore((s) => s.setSoundPack)
   const soundVolume = useSettingsStore((s) => s.soundVolume)
   const setSoundVolume = useSettingsStore((s) => s.setSoundVolume)
-  const micGain = useSettingsStore((s) => s.micGain)
-  const setMicGain = useSettingsStore((s) => s.setMicGain)
-  const vadThreshold = useSettingsStore((s) => s.vadThreshold)
-  const setVadThreshold = useSettingsStore((s) => s.setVadThreshold)
+  const confidenceThreshold = useSettingsStore((s) => s.confidenceThreshold)
+  const setConfidenceThreshold = useSettingsStore((s) => s.setConfidenceThreshold)
+  const outputDevice = useSettingsStore((s) => s.outputDevice)
+  const setOutputDevice = useSettingsStore((s) => s.setOutputDevice)
 
   const holdOnIncorrect = useChecklistStore((s) => s.holdOnIncorrect)
   const setHoldOnIncorrect = useChecklistStore((s) => s.setHoldOnIncorrect)
@@ -48,6 +54,24 @@ export function SettingsWindow() {
   }, [soundPack, setSoundPack])
 
   useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        const devices = await invoke<AudioDevice[]>("get_available_output_devices")
+        setAvailableOutputDevices(devices ?? [])
+        if (devices && devices.length > 0 && outputDevice == null) {
+          // keep current selection if present; otherwise default -> "default"
+          setOutputDevice("default")
+          invoke("set_output_device", { device: "default" }).catch(() => {})
+        }
+      } catch (e) {
+        console.error("Failed to fetch output devices", e)
+      }
+    }
+
+    fetchDevices()
+  }, [outputDevice, setOutputDevice])
+
+  useEffect(() => {
     getCurrentWindow()
       .show()
       .catch(() => {})
@@ -61,12 +85,12 @@ export function SettingsWindow() {
         <div className="grid grid-cols-[120px_1fr] items-center gap-3">
           <Label className="text-sm text-slate-300">Copilot</Label>
           <Select value={soundPack} onValueChange={setSoundPack}>
-            <SelectTrigger className="bg-slate-900/50 border-slate-600 text-white text-sm focus:ring-cyan-500">
+            <SelectTrigger className="bg-slate-900/50 border-slate-600 text-white text-sm focus:ring-cyan-500 w-56 truncate">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-slate-900 border-slate-600 text-white">
+            <SelectContent className="bg-slate-900 border-slate-600 text-white max-w-[20rem]">
               {availableSoundPacks.map((pack) => (
-                <SelectItem key={pack} value={pack}>
+                <SelectItem key={pack} value={pack} className="truncate">
                   {pack}
                 </SelectItem>
               ))}
@@ -74,18 +98,37 @@ export function SettingsWindow() {
           </Select>
         </div>
 
+        <div className="grid grid-cols-[120px_1fr] items-center gap-3">
+          <Label className="text-sm text-slate-300">Output Device</Label>
+          <Select
+            value={outputDevice ?? "default"}
+            onValueChange={(v) => {
+              setOutputDevice(v === "default" ? null : v)
+              invoke("set_output_device", { device: v === "default" ? null : v }).catch(() => {})
+            }}
+          >
+            <SelectTrigger className="bg-slate-900/50 border-slate-600 text-white text-sm focus:ring-cyan-500 w-56 truncate">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-900 border-slate-600 text-white max-w-[20rem]">
+              {availableOutputDevices.map((d) => (
+                <SelectItem key={d.index} value={d.index} className="truncate">
+                  {d.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <SliderRow label="Sound Volume" value={soundVolume} onChange={setSoundVolume} min={0} max={200} step={1} />
-        <SliderRow label="Mic Gain" value={micGain} onChange={setMicGain} min={50} max={400} step={10} />
         <SliderRow
           label="Voice Sensitivity"
-          value={vadThreshold}
-          onChange={setVadThreshold}
-          min={1}
-          max={50}
+          value={confidenceThreshold}
+          onChange={setConfidenceThreshold}
+          min={50}
+          max={100}
           step={1}
         />
-
-        <VoiceModelSettings />
 
         <SectionHeader icon={<Option className="h-3 w-3 text-cyan-400 shrink-0" />} label="Options" />
 

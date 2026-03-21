@@ -43,7 +43,7 @@
   },
   {
     "minuteMark": 5,
-    "label": "FO closes table",
+    "label": "FO closes table and APU start reminder",
     "type": "flow",
     "flowId": "table_close"
   },

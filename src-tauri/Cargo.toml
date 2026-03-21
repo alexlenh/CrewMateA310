@@ -1,6 +1,6 @@
 [package]
 name = "crewmatea350"
-version = "0.1.8"
+version = "0.1.9"
 description = "crewmatea350 app"
 authors = ["Márcio Araújo"]
 edition = "2021"
@@ -29,13 +29,11 @@ tokio = { version = "1", features = ["full"] }
 anyhow = "1.0"
 thiserror = "1.0"
 tauri-plugin-shell = "2"
-futures-util = "0.3"
-reqwest = { version = "0.12", features = ["stream"] }
-zip = "0.6"
 rodio = { version = "0.19", default-features = true }
 tauri-plugin-log = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-prevent-default = "3"
+cpal = "0.15"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"

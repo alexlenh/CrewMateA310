@@ -6,7 +6,6 @@ import { ConnectionError } from "@/components/connectionError"
 import { FlowPanel } from "@/components/FlowPanel"
 import { Footer } from "@/components/Footer"
 import { IconToolbar } from "@/components/IconToolbar"
-import { NoVoiceModel } from "@/components/noVoiceModel"
 import { TextBar } from "@/components/textBar"
 import { useAutoFlows } from "@/hooks/useAutoFlows"
 import { useBaroSync } from "@/hooks/useBaroSync"
@@ -15,7 +14,6 @@ import { useCloseConfirm } from "@/hooks/useCloseConfirm"
 import { usePreflightTimer } from "@/hooks/usePreflightTimer"
 import { useSimConnection } from "@/hooks/useSimConnection"
 import { useSpeechCommands } from "@/hooks/useSpeechCommands"
-import { useVoskModelStatus } from "@/hooks/useVoskModelStatus"
 import { usePerformanceStore } from "@/store/performanceStore"
 import { usePreflightTimerStore } from "@/store/preflightTimerStore"
 import { useSettingsStore } from "@/store/settingsStore"
@@ -33,12 +31,11 @@ function App() {
   const voiceEnabled = useSettingsStore((state) => state.voiceEnabled)
   const setVoiceEnabled = useSettingsStore((state) => state.setVoiceEnabled)
   const takeoffVr = usePerformanceStore((state) => state.takeoff.vr)
-  const { voskModelAvailable, voskModelSelected } = useVoskModelStatus({ setVoiceEnabled })
 
   useCallouts(takeoffVr)
   useAutoFlows()
   usePreflightTimer()
-  const { recognizedText, isValidCommand, isUnrecognized } = useSpeechCommands({ voiceEnabled })
+  const { recognizedText, isValidCommand, isUnrecognized, speechKey } = useSpeechCommands({ voiceEnabled })
   useCloseConfirm()
 
   useEffect(() => {
@@ -60,22 +57,21 @@ function App() {
               <IconToolbar
                 voiceEnabled={voiceEnabled}
                 onToggleVoice={() => setVoiceEnabled(!voiceEnabled)}
-                voiceDisabled={!voskModelAvailable || !voskModelSelected}
+                voiceDisabled={false}
               />
-              {voskModelAvailable === false || voskModelSelected === false ? (
-                <NoVoiceModel voskModelAvailable={voskModelAvailable ?? false} />
-              ) : (
-                <>
-                  <TextBar text={recognizedText} isValidCommand={isValidCommand} isUnrecognized={isUnrecognized} />
-                  {currentEvent && (
-                    <span className="text-xs text-cyan-300/80 font-mono animate-pulse truncate max-w-[140px]">
-                      {currentEvent}
-                    </span>
-                  )}
-                  <FlowPanel />
-                  <ChecklistPanel />
-                </>
+              <TextBar
+                text={recognizedText}
+                isValidCommand={isValidCommand}
+                isUnrecognized={isUnrecognized}
+                speechKey={speechKey}
+              />
+              {currentEvent && (
+                <span className="text-xs text-cyan-300/80 font-mono animate-pulse truncate max-w-[140px]">
+                  {currentEvent}
+                </span>
               )}
+              <FlowPanel />
+              <ChecklistPanel />
             </>
           )}
         </div>

@@ -3,23 +3,18 @@ mod audio;
 use audio::audio_commands::{
     get_sound_packs, is_audio_playing, play_sound, play_sound_sequence, AudioPlayerState,
 };
+use audio::audio_devices::{
+    get_available_input_devices, get_available_output_devices, set_input_device, set_output_device,
+};
 use audio::audio_player::AudioPlayer;
 use tauri_plugin_window_state::StateFlags;
 
 mod brigdes;
 use brigdes::speech_bridge::SpeechBridge;
-mod vosk_models;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use tauri::Emitter;
 use tauri::Manager;
-use vosk_models::vosk_commands::VoskModelManagerState;
-use vosk_models::vosk_commands::{
-    check_vosk_model_status, delete_vosk_model, download_vosk_model, get_selected_vosk_model,
-    get_voice_model_info, get_vosk_model_path, get_vosk_models, open_voice_models_folder,
-    set_selected_vosk_model,
-};
-use vosk_models::VoskModelManager;
 
 use simconnect::simvars::{
     simvar_get, simvar_set, spawn_simvar_worker, start_telemetry_stream, stop_telemetry_stream,
@@ -41,14 +36,8 @@ fn get_in_cockpit() -> bool {
 }
 
 #[tauri::command]
-fn set_mic_gain(state: tauri::State<'_, SpeechBridgeState>, gain: f32) {
-    let json = format!(r#"{{"gain":{:.2}}}"#, gain);
-    state.0.send_config(&json);
-}
-
-#[tauri::command]
-fn set_vad_threshold(state: tauri::State<'_, SpeechBridgeState>, threshold: f32) {
-    let json = format!(r#"{{"vadThreshold":{:.3}}}"#, threshold);
+fn set_confidence_threshold(state: tauri::State<'_, SpeechBridgeState>, threshold: f32) {
+    let json = format!(r#"{{"confidenceThreshold":{:.3}}}"#, threshold);
     state.0.send_config(&json);
 }
 
@@ -111,7 +100,7 @@ pub fn run() {
 
             // Initialize audio player
             let audio_player = AudioPlayer::new().expect("Failed to initialize audio player");
-            app.manage(AudioPlayerState(audio_player));
+            app.manage(AudioPlayerState(std::sync::Mutex::new(audio_player)));
 
             // Initialize SimVar worker
             app.manage(AppState {
@@ -121,13 +110,6 @@ pub fn run() {
             // Start aircraft title SimConnect stream
             start_aircraft_title_stream(app.handle().clone());
             start_flight_state_stream(app.handle().clone());
-
-            // Initialize Vosk model manager
-            let vosk_model_manager = VoskModelManager::new(app.handle())
-                .expect("Failed to initialize Vosk model manager");
-            app.manage(VoskModelManagerState(std::sync::Arc::new(
-                tokio::sync::Mutex::new(vosk_model_manager),
-            )));
 
             // Initialize logging
             let logs_dir = match app.path().app_data_dir() {
@@ -198,23 +180,17 @@ pub fn run() {
             simvar_get,
             start_telemetry_stream,
             stop_telemetry_stream,
-            get_voice_model_info,
-            open_voice_models_folder,
-            get_vosk_models,
-            download_vosk_model,
-            delete_vosk_model,
-            get_vosk_model_path,
-            get_selected_vosk_model,
-            set_selected_vosk_model,
-            check_vosk_model_status,
             play_sound,
             play_sound_sequence,
             is_audio_playing,
             get_sound_packs,
+            get_available_input_devices,
+            get_available_output_devices,
+            set_output_device,
+            set_input_device,
             get_aircraft_title,
-            set_mic_gain,
-            set_vad_threshold,
             get_in_cockpit,
+            set_confidence_threshold,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -11,9 +11,11 @@ type LandingPhase = "idle" | "spoilers" | "reverser" | "decel"
 interface SpeedCalloutFlags {
   calledThrustSet: boolean
   called100: boolean
-  called70: boolean
+  called80: boolean
   calledVr: boolean
+  calledV1: boolean
   vrInhibit: boolean
+  v1Inhibit: boolean
 }
 
 interface AltitudeCalloutFlags {
@@ -121,7 +123,6 @@ function handleReverserPhase(ls: LandingSequenceState, t: Telemetry, elapsed: nu
 function handleDecelPhase(ls: LandingSequenceState, t: Telemetry, elapsed: number) {
   const brakesApplied = t.brakeLeftPosition > 0.1 || t.brakeRightPosition > 0.1
   if (brakesApplied && t.ias > 40) {
-    playSound("decel.ogg")
     completeLanding(ls)
   } else if (elapsed >= DECEL_TIMEOUT) {
     completeLanding(ls)
@@ -137,13 +138,15 @@ const phaseHandlers: Record<
   decel: handleDecelPhase
 }
 
-export function useCallouts(vrSpeed: number) {
+export function useCallouts(v1Speed: number, vrSpeed: number) {
   const speed = useRef<SpeedCalloutFlags>({
     calledThrustSet: false,
     called100: false,
-    called70: false,
+    called80: false,
     calledVr: false,
-    vrInhibit: true
+    calledV1: false,
+    vrInhibit: true,
+    v1Inhibit: true
   })
 
   const altitude = useRef<AltitudeCalloutFlags>({
@@ -177,6 +180,9 @@ export function useCallouts(vrSpeed: number) {
   const vrSpeedRef = useRef(vrSpeed)
   vrSpeedRef.current = vrSpeed
 
+  const v1SpeedRef = useRef(v1Speed)
+  v1SpeedRef.current = v1Speed
+
   // Re-arm positive-climb callout on go-around
   const goAroundCount = useRef(useGoAroundStore.getState().count)
   useEffect(() => {
@@ -197,6 +203,7 @@ export function useCallouts(vrSpeed: number) {
     const ls = landing.current
     const p = prev.current
     const vr = vrSpeedRef.current
+    const v1 = v1SpeedRef.current
     const now = Date.now()
     const cabinIsReady = (t.cabinIsReady ?? 0) > 0.5 ? 1 : 0
     const takeoffN1 = Math.min(t.engineN1_1 ?? 0, t.engineN1_2 ?? 0)
@@ -222,6 +229,7 @@ export function useCallouts(vrSpeed: number) {
     if (!t.onGround && p.onGround) {
       sp.called100 = false
       sp.vrInhibit = true
+      sp.v1Inhibit = true
       al.positiveClimb = false
       al.tenThousandClimb = false
       al.transitionAltitude = false
@@ -229,11 +237,18 @@ export function useCallouts(vrSpeed: number) {
     }
 
     if (t.onGround && !p.onGround) {
-      sp.called70 = false
+      sp.called80 = false
       sp.vrInhibit = true
+      sp.v1Inhibit = true
       al.tenThousandDescent = false
       al.transitionLevel = false
       al.oneToGo = false
+    }
+
+    if (t.onGround && !sp.v1Inhibit && v1 && !isNaN(v1) && t.ias >= v1 && t.ias < v1 + 5 && !sp.calledV1) {
+      playSound("rotate.ogg")
+      sp.calledV1 = true
+      sp.v1Inhibit = true
     }
 
     // Speed callouts (ground)
@@ -249,10 +264,10 @@ export function useCallouts(vrSpeed: number) {
       sp.called100 = true
     }
 
-    // 70 knots callout
-    if (t.onGround && crossedDown(p.speed, t.ias, 70) && !sp.called70) {
-      playSound("70_knots.ogg")
-      sp.called70 = true
+    // 80 knots callout
+    if (t.onGround && crossedDown(p.speed, t.ias, 80) && !sp.called80) {
+      playSound("80_knots.ogg")
+      sp.called80 = true
     }
 
     // Thrust set callout
@@ -344,9 +359,11 @@ export function useCallouts(vrSpeed: number) {
     // Re-arm at taxi speed
     if (t.onGround && t.ias < 30) {
       sp.calledThrustSet = false
+      sp.calledV1 = false
       sp.calledVr = false
       sp.called100 = false
       sp.vrInhibit = false
+      sp.v1Inhibit = false
       // Reset passing altitude state
       usePassingAltitudeStore.getState().reset()
     }

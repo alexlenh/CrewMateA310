@@ -221,8 +221,7 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
   // ── Engine start ──────────────────────────────────────────────────────────
   engine_start_2: async () => {
     await playSound("check.ogg")
-    const startAB = Math.random() < 0.5 ? 0 : 1
-    await setIgnKnob(startAB)
+    await setIgnKnob(1)
     await new Promise((resolve) => setTimeout(resolve, 2000))
     await startEngine2(1)
   },

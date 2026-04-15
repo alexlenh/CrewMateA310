@@ -40,17 +40,18 @@ export function LandingWindow() {
             <Label htmlFor="flaps" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
               Flaps
             </Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-3 h-3 text-slate-400 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[200px]">
-                  A300/A310 flaps are formatted as (Slats/Flaps)
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-3 h-3 text-slate-400 cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="text-xs max-w-[200px]">
+                A300/A310 flaps are formatted as (Slats/Flaps)
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <select id="flaps" name="flaps" value={landing.flaps} onChange={handleSelectChange} className={selectCls}>
             <option value="3">20/20</option>
             <option value="4">30/40</option>
@@ -148,7 +149,7 @@ export function LandingWindow() {
           >
             <option value="off">OFF</option>
             <option value="min">LOW</option>
-            <option value="mid">MID</option>
+            <option value="med">MED</option>
             <option value="max">MAX</option>
           </select>
         </div>

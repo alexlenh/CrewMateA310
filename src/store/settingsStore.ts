@@ -19,7 +19,6 @@ interface SettingsStore {
   lightsControlMode: LightsControlMode
   confidenceThreshold: number
   postLandingShutdownEnabled: boolean
-  v2CalloutEnabled: boolean
   setVoiceEnabled: (enabled: boolean) => void
   setVoiceMode: (mode: "continuous" | "ptt") => void
   setPttShortcut: (shortcut: string) => void
@@ -31,7 +30,6 @@ interface SettingsStore {
   setLightsControlMode: (mode: LightsControlMode) => void
   setConfidenceThreshold: (threshold: number) => void
   setPostLandingShutdownEnabled: (enabled: boolean) => void
-  setV2CalloutEnabled: (enabled: boolean) => void
 }
 
 let isUpdatingFromEvent = false
@@ -57,7 +55,6 @@ export const useSettingsStore = create<SettingsStore>()(
       lightsControlMode: defaultLightsControlMode,
       confidenceThreshold: 85,
       postLandingShutdownEnabled: true,
-      v2CalloutEnabled: true,
 
       setVoiceEnabled: (enabled) => {
         set({ voiceEnabled: enabled })
@@ -128,12 +125,6 @@ export const useSettingsStore = create<SettingsStore>()(
         if (!isUpdatingFromEvent) {
           emit("settings-changed", { postLandingShutdownEnabled: enabled })
         }
-      },
-      setV2CalloutEnabled: (enabled) => {
-        set({ v2CalloutEnabled: enabled })
-        if (!isUpdatingFromEvent) {
-          emit("settings-changed", { v2CalloutEnabled: enabled })
-        }
       }
     }),
     {
@@ -202,9 +193,6 @@ listen<
   }
   if (event.payload.postLandingShutdownEnabled !== undefined) {
     useSettingsStore.setState({ postLandingShutdownEnabled: event.payload.postLandingShutdownEnabled })
-  }
-  if (event.payload.v2CalloutEnabled !== undefined) {
-    useSettingsStore.setState({ v2CalloutEnabled: event.payload.v2CalloutEnabled })
   }
   if (event.payload.outputDevice !== undefined) {
     useSettingsStore.setState({ outputDevice: event.payload.outputDevice })

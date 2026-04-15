@@ -4,6 +4,7 @@ import { Info } from "lucide-react"
 import { useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { usePerformanceStore } from "@/store/performanceStore"
@@ -25,6 +26,10 @@ export function LandingWindow() {
     emit("landing-updated", { ...landing, [name]: value })
   }
 
+  const handleNumberInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange(e.target.name, Number(e.target.value))
+  }
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     handleChange(e.target.name, e.target.value)
   }
@@ -34,23 +39,25 @@ export function LandingWindow() {
   return (
     <div className="h-screen bg-black text-white p-3 flex flex-col gap-3">
       {/* Flaps + Anti Ice */}
-      <div className="grid grid-cols-2 gap-2">
+
+      <div className="grid grid-cols-3 gap-2">
         <div className="space-y-1">
           <div className={labelRow}>
             <Label htmlFor="flaps" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
               Flaps
             </Label>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
+                  A300/A310 flaps are formatted as (Slats/Flaps)
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-3 h-3 text-slate-400 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="text-xs max-w-[200px]">
-                A300/A310 flaps are formatted as (Slats/Flaps)
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
 
           <select id="flaps" name="flaps" value={landing.flaps} onChange={handleSelectChange} className={selectCls}>
             <option value="3">20/20</option>
@@ -67,9 +74,9 @@ export function LandingWindow() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="w-3 h-3 text-slate-400 cursor-help" />
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[200px]">
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
                   Will leave Flaps down on "After Landing" flow if Anti Ice is used
                 </TooltipContent>
               </Tooltip>
@@ -88,6 +95,33 @@ export function LandingWindow() {
             <option value="onengwing">ENG+WING</option>
           </select>
         </div>
+
+        <div className="space-y-1">
+          <div className={labelRow}>
+            <Label htmlFor="transitionLevel" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
+              TL
+            </Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
+                  Transition Level
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <Input
+            type="number"
+            id="transitionLevel"
+            name="transitionLevel"
+            value={landing.transitionLevel ?? ""}
+            onChange={handleNumberInput}
+            className="h-8 bg-slate-900/50 border-slate-600 text-white text-xs font-mono text-center px-1 focus-visible:ring-cyan-500"
+            placeholder="—"
+          />
+        </div>
       </div>
 
       {/* APU + Auto Brake */}
@@ -97,13 +131,12 @@ export function LandingWindow() {
             <Label htmlFor="apuStart" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
               APU
             </Label>
-
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="w-3 h-3 text-slate-400 cursor-help" />
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[200px]">
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
                   Will start the APU on "After Landing" flow if set to "Auto"
                 </TooltipContent>
               </Tooltip>
@@ -131,9 +164,9 @@ export function LandingWindow() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="w-3 h-3 text-slate-400 cursor-help" />
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
                 </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[200px]">
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
                   Autobrake will be set after ground spoilers are armed
                 </TooltipContent>
               </Tooltip>

@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from "react"
 import { playSound, playSoundSequence, isSoundPlaying } from "@/services/playSounds"
 import { useGoAroundStore } from "@/store/goAroundStore"
 import { usePassingAltitudeStore } from "@/store/passingAltitudeStore"
-import { useSettingsStore } from "@/store/settingsStore"
+import { usePerformanceStore } from "@/store/performanceStore"
 import { useTelemetryStore } from "@/store/telemetryStore"
 import type { Telemetry } from "@/store/telemetryStore"
 
@@ -198,14 +198,16 @@ export function useCallouts(v2Speed: number) {
     const t = useTelemetryStore.getState().telemetry
     if (!t || t.isSlewActive) return
 
+    const perf = usePerformanceStore.getState()
+    const transitionAltitude = perf.takeoff.transitionAltitude
+    const transitionLevel = perf.landing.transitionLevel
+
     const sp = speed.current
     const al = altitude.current
     const ls = landing.current
     const p = prev.current
     const v1 = t.v1 ?? 0
     const vr = t.vr ?? 0
-    const v2 = v2SpeedRef.current
-    const v2CalloutEnabled = useSettingsStore.getState().v2CalloutEnabled
     const now = Date.now()
     const cabinIsReady = (t.cabinIsReady ?? 0) > 0.5 ? 1 : 0
     const takeoffN1 = Math.min(t.engineN1_1 ?? 0, t.engineN1_2 ?? 0)
@@ -264,18 +266,6 @@ export function useCallouts(v2Speed: number) {
     if (t.onGround && !sp.vrInhibit && vr > 0 && t.ias >= vr && t.ias < vr + 5 && !sp.calledVr) {
       playSound("rotate.ogg")
       sp.calledVr = true
-    }
-
-    // V2 callout (optional)
-    if (t.onGround && !sp.vrInhibit && v2CalloutEnabled && v2 > 0 && t.ias >= v2 && t.ias < v2 + 5 && !sp.calledV2) {
-      playSound("v_2.ogg")
-      sp.calledV2 = true
-      sp.vrInhibit = true
-    }
-
-    // Inhibit after VR if V2 callout is disabled
-    if (!v2CalloutEnabled && sp.calledVr) {
-      sp.vrInhibit = true
     }
 
     // 100 knots callout
@@ -341,8 +331,8 @@ export function useCallouts(v2Speed: number) {
       !t.onGround &&
       t.vs > 100 &&
       !al.transitionAltitude &&
-      t.transitionAltitude > 0 &&
-      crossedUp(p.alt, t.alt, t.transitionAltitude)
+      transitionAltitude > 0 &&
+      crossedUp(p.alt, t.alt, transitionAltitude)
     ) {
       playSound("transiton_altitude.ogg")
       al.transitionAltitude = true
@@ -352,8 +342,8 @@ export function useCallouts(v2Speed: number) {
       !t.onGround &&
       t.vs < -100 &&
       !al.transitionLevel &&
-      t.transitionLevel > 0 &&
-      crossedDown(p.alt, t.alt, t.transitionLevel)
+      transitionLevel > 0 &&
+      crossedDown(p.alt, t.alt, transitionLevel)
     ) {
       playSound("transiton_level.ogg")
       al.transitionLevel = true

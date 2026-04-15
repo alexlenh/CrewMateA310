@@ -24,6 +24,7 @@ interface AltitudeCalloutFlags {
   tenThousandDescent: boolean
   transitionAltitude: boolean
   transitionLevel: boolean
+  above100: boolean
   oneToGo: boolean
 }
 
@@ -41,6 +42,7 @@ interface PreviousValues {
   cabinIsReady: number
   takeoffN1: number
   fcuAlt: number
+  mda: number
 }
 
 const THRUST_SET_MARGIN = 1
@@ -155,6 +157,7 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     tenThousandDescent: false,
     transitionAltitude: false,
     transitionLevel: false,
+    above100: false,
     oneToGo: false
   })
 
@@ -171,7 +174,8 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     onGround: 1,
     cabinIsReady: 0,
     takeoffN1: 0,
-    fcuAlt: 0
+    fcuAlt: 0,
+    mda: 0
   })
 
   const cabinReadyPrimed = useRef(false)
@@ -209,6 +213,7 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     const takeoffN1 = Math.min(t.engineN1_1 ?? 0, t.engineN1_2 ?? 0)
     const fcuAlt = t.fcu_alt ?? 0
     const takeoffThrustTarget = getTakeoffThrustTarget(t)
+    const mda = t.mda ?? 0
 
     if (!cabinReadyPrimed.current) {
       cabinReadyPrimed.current = true
@@ -243,6 +248,13 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
       al.tenThousandDescent = false
       al.transitionLevel = false
       al.oneToGo = false
+      al.above100 = false
+    }
+
+    if (t.onGround && !sp.v1Inhibit && v1 && !isNaN(v1) && t.ias >= v1 && t.ias < v1 + 5 && !sp.calledV1) {
+      playSound("v_one.ogg")
+      sp.calledV1 = true
+      sp.v1Inhibit = true
     }
 
     if (t.onGround && !sp.v1Inhibit && v1 && !isNaN(v1) && t.ias >= v1 && t.ias < v1 + 5 && !sp.calledV1) {
@@ -314,6 +326,11 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     if (!t.onGround && t.vs < -100 && !al.oneToGo && fcuAlt > 0 && crossedDown(p.alt, t.alt, fcuAlt + 1000)) {
       playSound("one_to_go.ogg")
       al.oneToGo = true
+    }
+
+    if (!t.onGround && t.alt === mda + 100 && !al.above100) {
+      playSound("100_above.ogg")
+      al.above100 = true
     }
 
     // Transition altitude / level
@@ -428,6 +445,7 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     p.cabinIsReady = cabinIsReady
     p.takeoffN1 = takeoffN1
     p.fcuAlt = fcuAlt
+    p.mda = mda
   }, [])
 
   useEffect(() => {

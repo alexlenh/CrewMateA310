@@ -96,6 +96,9 @@ async function getTemplateVars(): Promise<Record<string, string>> {
   vars["autobrake_set"] = `${autoBrakeMapped} (>L:A310_AUTOBRAKE_LEVEL)`
   vars["autobrake_expect"] = autoBrakeMapped
 
+  vars["landing_elevation_cmd"] = `${landing.landingElevation} (>L:A310_LANDING_ELEVATION)`
+  vars["landing_elevation_expect"] = String(landing.landingElevation)
+
   return vars
 }
 

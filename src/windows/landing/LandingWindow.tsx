@@ -125,7 +125,26 @@ export function LandingWindow() {
       </div>
 
       {/* APU + Auto Brake */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
+        <div className="space-y-1">
+          <div className={labelRow}>
+            <Label htmlFor="landingElevation" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
+              Landing Elevation
+            </Label>
+          </div>
+
+          <Input
+            type="number"
+            id="landingElevation"
+            name="landingElevation"
+            value={landing.landingElevation ?? ""}
+            step={50}
+            onChange={handleNumberInput}
+            className="h-8 bg-slate-900/50 border-slate-600 text-white text-xs font-mono text-center px-1 focus-visible:ring-cyan-500"
+            placeholder="—"
+          />
+        </div>
+
         <div className="space-y-1">
           <div className={labelRow}>
             <Label htmlFor="apuStart" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">

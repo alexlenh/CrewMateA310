@@ -265,12 +265,6 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
       sp.v1Inhibit = true
     }
 
-    if (t.onGround && !sp.v1Inhibit && v1 && !isNaN(v1) && t.ias >= v1 && t.ias < v1 + 5 && !sp.calledV1) {
-      playSound("rotate.ogg")
-      sp.calledV1 = true
-      sp.v1Inhibit = true
-    }
-
     // Speed callouts (ground)
     if (t.onGround && !sp.vrInhibit && vr && !isNaN(vr) && t.ias >= vr && t.ias < vr + 5 && !sp.calledVr) {
       playSound("rotate.ogg")

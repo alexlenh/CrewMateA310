@@ -10,7 +10,7 @@ export async function setStartAPU(position: number) {
     await new Promise((resolve) => setTimeout(resolve, 2000)) // 2 seconds
 
     await simvarSet(expression1)
-    
+
     await new Promise((resolve) => setTimeout(resolve, 45000)) // 45 seconds
     await simvarSet(expression2)
   } catch (error) {

@@ -85,6 +85,17 @@ async function getTemplateVars(): Promise<Record<string, string>> {
   vars["pitch_trim_cmd"] = `${takeoff.trim} (>L:ELEV_TRIM_RATIO)`
   vars["pitch_trim_expect"] = String(takeoff.trim)
 
+  const autoBrakeMap: Record<string, string> = {
+    off: "0",
+    min: "1",
+    med: "2",
+    max: "3"
+  }
+
+  const autoBrakeMapped = autoBrakeMap[landing.autoBrake ?? "med"] ?? "2"
+  vars["autobrake_set"] = `${autoBrakeMapped} (>L:A310_AUTOBRAKE_LEVEL)`
+  vars["autobrake_expect"] = autoBrakeMapped
+
   return vars
 }
 

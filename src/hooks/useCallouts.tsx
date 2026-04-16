@@ -1,8 +1,9 @@
 import { useEffect, useRef, useCallback } from "react"
 
-import { playSound, isSoundPlaying } from "@/services/playSounds"
+import { playSound, playSoundSequence, isSoundPlaying } from "@/services/playSounds"
 import { useGoAroundStore } from "@/store/goAroundStore"
 import { usePassingAltitudeStore } from "@/store/passingAltitudeStore"
+import { usePerformanceStore } from "@/store/performanceStore"
 import { useTelemetryStore } from "@/store/telemetryStore"
 import type { Telemetry } from "@/store/telemetryStore"
 
@@ -14,6 +15,7 @@ interface SpeedCalloutFlags {
   called80: boolean
   calledVr: boolean
   calledV1: boolean
+  calledV2: boolean
   vrInhibit: boolean
   v1Inhibit: boolean
 }
@@ -143,7 +145,7 @@ const phaseHandlers: Record<
   decel: handleDecelPhase
 }
 
-export function useCallouts(v1Speed: number, vrSpeed: number) {
+export function useCallouts(v2Speed: number) {
   const speed = useRef<SpeedCalloutFlags>({
     calledThrustSet: false,
     called100: false,
@@ -151,7 +153,8 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     calledVr: false,
     calledV1: false,
     vrInhibit: true,
-    v1Inhibit: true
+    v1Inhibit: true,
+    calledV2: false
   })
 
   const altitude = useRef<AltitudeCalloutFlags>({
@@ -187,11 +190,8 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
   const cabinReadyPrimed = useRef(false)
   const thrustSetPrimed = useRef(false)
 
-  const vrSpeedRef = useRef(vrSpeed)
-  vrSpeedRef.current = vrSpeed
-
-  const v1SpeedRef = useRef(v1Speed)
-  v1SpeedRef.current = v1Speed
+  const v2SpeedRef = useRef(v2Speed)
+  v2SpeedRef.current = v2Speed
 
   // Re-arm positive-climb callout on go-around
   const goAroundCount = useRef(useGoAroundStore.getState().count)
@@ -208,12 +208,16 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     const t = useTelemetryStore.getState().telemetry
     if (!t || t.isSlewActive) return
 
+    const perf = usePerformanceStore.getState()
+    const transitionAltitude = perf.takeoff.transitionAltitude
+    const transitionLevel = perf.landing.transitionLevel
+
     const sp = speed.current
     const al = altitude.current
     const ls = landing.current
     const p = prev.current
-    const vr = vrSpeedRef.current
-    const v1 = v1SpeedRef.current
+    const v1 = t.v1 ?? 0
+    const vr = t.vr ?? 0
     const now = Date.now()
     const cabinIsReady = (t.cabinIsReady ?? 0) > 0.5 ? 1 : 0
     const takeoffN1 = Math.min(t.engineN1_1 ?? 0, t.engineN1_2 ?? 0)
@@ -263,13 +267,19 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
       playSound("v_one.ogg")
       sp.calledV1 = true
       sp.v1Inhibit = true
+      // If VR == V1 (or within 1 kt), chain rotate immediately after v_one
+      if (vr > 0 && Math.abs(vr - v1) <= 1) {
+        playSoundSequence(["v_one.ogg", "rotate.ogg"])
+        sp.calledVr = true
+      } else {
+        playSound("v_one.ogg")
+      }
     }
 
-    // Speed callouts (ground)
-    if (t.onGround && !sp.vrInhibit && vr && !isNaN(vr) && t.ias >= vr && t.ias < vr + 5 && !sp.calledVr) {
+    // VR callout
+    if (t.onGround && !sp.vrInhibit && vr > 0 && t.ias >= vr && t.ias < vr + 5 && !sp.calledVr) {
       playSound("rotate.ogg")
       sp.calledVr = true
-      sp.vrInhibit = true
     }
 
     // 100 knots callout
@@ -345,8 +355,8 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
       !t.onGround &&
       t.vs > 100 &&
       !al.transitionAltitude &&
-      t.transitionAltitude > 0 &&
-      crossedUp(p.alt, t.alt, t.transitionAltitude)
+      transitionAltitude > 0 &&
+      crossedUp(p.alt, t.alt, transitionAltitude)
     ) {
       playSound("transiton_altitude.ogg")
       al.transitionAltitude = true
@@ -356,8 +366,8 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
       !t.onGround &&
       t.vs < -100 &&
       !al.transitionLevel &&
-      t.transitionLevel > 0 &&
-      crossedDown(p.alt, t.alt, t.transitionLevel)
+      transitionLevel > 0 &&
+      crossedDown(p.alt, t.alt, transitionLevel)
     ) {
       playSound("transiton_level.ogg")
       al.transitionLevel = true
@@ -435,7 +445,9 @@ export function useCallouts(v1Speed: number, vrSpeed: number) {
     // Process landing phases (skip if idle or audio still playing)
     if (ls.phase !== "idle" && !(await isSoundPlaying())) {
       const elapsed = ls.phaseStartTime ? now - ls.phaseStartTime : 0
-      const handler = (phaseHandlers as Record<string, Function>)[ls.phase]
+      const handler = (
+        phaseHandlers as Record<string, (ls: LandingSequenceState, t: Telemetry, elapsed: number, now: number) => void>
+      )[ls.phase]
       if (typeof handler === "function") {
         handler(ls, t, elapsed, now)
       } else {

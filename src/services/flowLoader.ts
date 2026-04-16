@@ -82,6 +82,23 @@ async function getTemplateVars(): Promise<Record<string, string>> {
   }
   vars["landing_flaps"] = landFlapsMap[landing.flaps] ?? "5"
 
+  vars["pitch_trim_cmd"] = `${takeoff.trim} (>L:ELEV_TRIM_RATIO)`
+  vars["pitch_trim_expect"] = String(takeoff.trim)
+
+  const autoBrakeMap: Record<string, string> = {
+    off: "0",
+    min: "1",
+    med: "2",
+    max: "3"
+  }
+
+  const autoBrakeMapped = autoBrakeMap[landing.autoBrake ?? "med"] ?? "2"
+  vars["autobrake_set"] = `${autoBrakeMapped} (>L:A310_AUTOBRAKE_LEVEL)`
+  vars["autobrake_expect"] = autoBrakeMapped
+
+  vars["landing_elevation_cmd"] = `${landing.landingElevation} (>L:A310_LANDING_ELEVATION)`
+  vars["landing_elevation_expect"] = String(landing.landingElevation)
+
   return vars
 }
 

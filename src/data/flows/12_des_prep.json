@@ -4,9 +4,9 @@
   "steps": [
     {
       "label": "Landing Elevation",
-      "read": "(L:)",
-      "on": "",
-      "expect": 2
+      "read": "(L:A310_landing_elevation)",
+      "on": "{landing_elevation_cmd}",
+      "expect": "{landing_elevation_expect}"
     },
     {
       "label": "Engine 1 Anti Ice",

@@ -172,7 +172,6 @@ namespace VoiceSidecar
             );
         }
 
-
         private static VoiceCommand? MissedApproachFeet(string cval, string raw)
         {
             if (!int.TryParse(cval, out var v) || v < 100 || v > 60000)
@@ -226,7 +225,6 @@ namespace VoiceSidecar
             );
         }
 
-        
         private static VoiceCommand DispatchFma(string cval, string raw)
         {
             var payload = new Dictionary<string, object>();
@@ -249,7 +247,6 @@ namespace VoiceSidecar
             Set(4, "approachCat");
             Set(5, "armed");
             Set(6, "urgent");
-
 
             return Cmd("fma_callout", raw, payload);
         }

@@ -38,8 +38,8 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI5RkZFQzJFQUMyQkRCOEYKUldTUDJ5dXNMdXovdVY0a3kwcG9aRGdCMGt0QlR0V2lYMkx6d3BVUkJZZFU5K0hRL1RZbHN5L0kK",
-      "endpoints": ["https://github.com/marxio09dio/CrewMateA350/releases/latest/download/latest.json"]
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEzNTdDOTBFMkE1NjNCNEMKUldSTU8xWXFEc2xYbzNXbXdQUDRzbEErZ3VVdnM3UTZ5MFZTcnkvYzRrOS9pSklmVmpVYVAwSXAK",
+      "endpoints": ["https://github.com/alexlenh/CrewMateA310/releases/latest/download/latest.json"]
     }
   }
 }

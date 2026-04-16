@@ -17,7 +17,6 @@ import { usePreflightTimer } from "@/hooks/usePreflightTimer"
 import { useSimConnection } from "@/hooks/useSimConnection"
 import { useSpeechCommands } from "@/hooks/useSpeechCommands"
 import { useVoiceHints } from "@/hooks/useVoiceHints"
-import { usePerformanceStore } from "@/store/performanceStore"
 import { usePreflightTimerStore } from "@/store/preflightTimerStore"
 import { useSettingsStore } from "@/store/settingsStore"
 import { useTelemetryStore } from "@/store/telemetryStore"
@@ -33,9 +32,8 @@ function App() {
 
   const voiceEnabled = useSettingsStore((state) => state.voiceEnabled)
   const setVoiceEnabled = useSettingsStore((state) => state.setVoiceEnabled)
-  const takeoffV2 = usePerformanceStore((state) => state.takeoff.v2)
 
-  useCallouts(takeoffV2)
+  useCallouts()
   useAutoFlows()
   usePreflightTimer()
   const { recognizedText, isValidCommand, isUnrecognized, speechKey, speechEngineError } = useSpeechCommands({

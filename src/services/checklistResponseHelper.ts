@@ -30,13 +30,6 @@ export function getDisplayResponses(item: ChecklistItem): string[] {
   }
 
   // Takeoff confirmation: show only the currently-configured thrust variant + safeword
-  if (item.takeoff_confirmation) {
-    const { v1, vr, v2, thrustSetting } = usePerformanceStore.getState().takeoff
-    const flexTemp = useTelemetryStore.getState().telemetry?.iniFlexTemperature
-    const thrust = thrustSetting === "flex" ? `flex ${flexTemp !== undefined ? Math.round(flexTemp) : "??"}` : "toga"
-    extras.push(`v1 ${v1} vr ${vr} v2 ${v2} ${thrust}`, "set and checked")
-    return extras
-  }
 
   // If an item expects feet (minimums), show BARO/RADIO examples
   if ((item.response ?? []).some((r) => r.toLowerCase().includes("feet"))) {

@@ -204,16 +204,6 @@ async function executeNormalItem(item: ChecklistItem, index: number, signal: Abo
       if (responseList.length === 0 || matchesAnyResponse(spoken, responseList)) {
         const s = spoken.toLowerCase().trim()
 
-        // Takeoff confirmation: require V1/VR/V2 labels + thrust type,
-        // or accept "set and checked" as a safeword bypass.
-        if (item.takeoff_confirmation && !s.includes("set and checked")) {
-          const { thrustSetting } = usePerformanceStore.getState().takeoff
-          const hasV1 = /\bv\s*1\b/.test(s) || /\bv\s*one\b/i.test(s)
-          const hasVR = /\bv\s*r\b/.test(s) || /\bv\s*rotate\b/i.test(s)
-          const hasV2 = /\bv\s*2\b/.test(s) || /\bv\s*two\b/i.test(s)
-          const hasThrust = thrustSetting === "flex" ? /\bflex\b/i.test(s) : /\btoga\b/i.test(s)
-          if (!(hasV1 && hasVR && hasV2 && hasThrust)) continue
-        }
 
         // Baro/feet confirmation: require a numeric value (digits or word form).
         const expectsFeet = responseList.some((r) => r.toLowerCase().includes("feet"))
@@ -419,27 +409,6 @@ async function executeNormalItem(item: ChecklistItem, index: number, signal: Abo
         ]
         await playSoundSequence(filenames)
       }
-    }
-
-    // ── takeoff_confirmation: copilot reads back V1/VR/V2 + FLEX/TOGA ────
-    if (item.takeoff_confirmation) {
-      const { v1, vr, v2, thrustSetting } = usePerformanceStore.getState().takeoff
-      const t = useTelemetryStore.getState().telemetry
-      const digits = (n: number) =>
-        String(Math.round(n))
-          .split("")
-          .map((d) => `${d}.ogg`)
-
-      const filenames: string[] = ["v_one.ogg", ...digits(v1), "v_r.ogg", ...digits(vr), "v_2.ogg", ...digits(v2)]
-
-      if (thrustSetting === "flex") {
-        const flexTemp = t?.iniFlexTemperature ?? 0
-        filenames.push("flex.ogg", ...digits(flexTemp))
-      } else {
-        filenames.push("TOGA.ogg")
-      }
-
-      await playSoundSequence(filenames)
     }
 
     // No extra validation — accept the matched response

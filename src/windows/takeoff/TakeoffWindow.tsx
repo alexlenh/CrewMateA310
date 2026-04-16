@@ -46,6 +46,16 @@ export function TakeoffWindow() {
             <Label htmlFor="trim" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
               Trim
             </Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
+                </TooltipTrigger>
+                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
+                  For UP trim value it's positive without a negative sign, for DN trim value it's negative with the negative sign.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <Input
             type="number"

@@ -15,7 +15,6 @@ interface SpeedCalloutFlags {
   called80: boolean
   calledVr: boolean
   calledV1: boolean
-  calledV2: boolean
   vrInhibit: boolean
   v1Inhibit: boolean
 }
@@ -145,7 +144,7 @@ const phaseHandlers: Record<
   decel: handleDecelPhase
 }
 
-export function useCallouts(v2Speed: number) {
+export function useCallouts() {
   const speed = useRef<SpeedCalloutFlags>({
     calledThrustSet: false,
     called100: false,
@@ -154,7 +153,6 @@ export function useCallouts(v2Speed: number) {
     calledV1: false,
     vrInhibit: true,
     v1Inhibit: true,
-    calledV2: false
   })
 
   const altitude = useRef<AltitudeCalloutFlags>({
@@ -190,8 +188,6 @@ export function useCallouts(v2Speed: number) {
   const cabinReadyPrimed = useRef(false)
   const thrustSetPrimed = useRef(false)
 
-  const v2SpeedRef = useRef(v2Speed)
-  v2SpeedRef.current = v2Speed
 
   // Re-arm positive-climb callout on go-around
   const goAroundCount = useRef(useGoAroundStore.getState().count)

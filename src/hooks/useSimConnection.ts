@@ -70,7 +70,7 @@ const simVars: { key: string; expression: string }[] = [
   { key: "autobrakeLevel", expression: "(L:INI_AUTOBRAKE_LEVEL)" },
   { key: "thrredalt", expression: "(L:A310_REDUCTION_ALTITUDE)" },
   { key: "v1", expression: "(L:A310_V1)" },
-  { key: "vr", expression: "(L:A310_VR)" }
+  { key: "vr", expression: "(L:A310_VR)" },
   // { key: "linkedInstruments", expression: "(L:INI_LINKED_INSTRUMENTS)" },
   // { key: "landingtrk", expression: "(L:INI_ARR_RUNWAY_HDG)" },
   // { key: "foShowAirports", expression: "(L:INI_SHOW_AIRPORTS2)" },

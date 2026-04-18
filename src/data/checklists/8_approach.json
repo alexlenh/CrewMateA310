@@ -32,7 +32,7 @@
       "label": "Ignition",
       "challenge": "ign.ogg",
       "response": ["cont relight", "set and checked"],
-      "var": "(L:A310_eng_ignition_switch, Number)",
+      "var": "(L:A310_eng_ignition_switch)",
       "expected": 4,
       "incorrect": "are_you_sure.ogg"
     }

@@ -246,7 +246,7 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
   checklist_after_takeoffP1: () => executeChecklist("climb_to_the_line"),
   checklist_after_takeoffP2: () => executeChecklist("climb_below_the_line"),
   checklist_after_landing: () => executeChecklist("after_landing"),
-  checklist_apporach: () => executeChecklist("approach"),
+  checklist_approach: () => executeChecklist("approach"),
   checklist_landing: () => executeChecklist("landing"),
   checklist_parking: () => executeChecklist("parking"),
   checklist_cancel: () => abortChecklist(),

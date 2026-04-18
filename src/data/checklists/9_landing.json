@@ -22,26 +22,18 @@
       "response": ["twenty", "fourty", "set and checked"],
       "label": "Slats and flaps",
       "simvar_check": {
-        "var_name": "(A:FLAPS HANDLE INDEX, number)",
+        "var_name": "(L:A310_GPWS_LANDING_SWITCH)",
         "var_type": "simvar",
         "validation_map": [
           {
-            "sim_value": 3.0,
+            "sim_value": 1.0,
             "expected_response": "twenty"
           },
           {
-            "sim_value": 4.0,
+            "sim_value": 0.0,
             "expected_response": "fourty"
           }
         ]
-      },
-      "store_check": {
-        "store": "landing.flaps",
-        "validation_map": [
-          { "store_value": "3", "expected_response": "twenty" },
-          { "store_value": "4", "expected_response": "fourty" }
-        ],
-        "incorrect": "are_you_sure.ogg"
       }
     },
     {

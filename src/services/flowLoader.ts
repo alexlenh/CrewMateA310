@@ -76,11 +76,6 @@ async function getTemplateVars(): Promise<Record<string, string>> {
   vars["landing_apu_start_cmd"] = landingApuAutoStart ? "1 (>L:A310_apu_start_button)" : "0 (>L:A310_apu_start_button)"
   vars["landing_apu_start_expect"] = landingApuAutoStart ? "1" : "0"
 
-  const landFlapsMap: Record<string, string> = {
-    "20/20": "3",
-    "30/40": "4"
-  }
-  vars["landing_flaps"] = landFlapsMap[landing.flaps] ?? "5"
 
   vars["pitch_trim_cmd"] = `${takeoff.trim} (>L:ELEV_TRIM_RATIO)`
   vars["pitch_trim_expect"] = String(takeoff.trim)

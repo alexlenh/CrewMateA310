@@ -13,7 +13,6 @@ interface TakeoffData {
 
 interface LandingData {
   transitionLevel: number
-  flaps: string
   missedAltitude: number
   antiIce?: string
   apuStart?: string
@@ -41,7 +40,6 @@ const defaultTakeoffData: TakeoffData = {
 
 const defaultLandingData: LandingData = {
   transitionLevel: 0,
-  flaps: "30/40",
   missedAltitude: 4000,
   antiIce: "off",
   apuStart: "auto",

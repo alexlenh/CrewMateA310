@@ -27,6 +27,7 @@ interface AltitudeCalloutFlags {
   transitionLevel: boolean
   above100mda: boolean
   above100dh: boolean
+  minimum: boolean
   oneToGo: boolean
 }
 
@@ -163,6 +164,7 @@ export function useCallouts() {
     transitionLevel: false,
     above100mda: false,
     above100dh: false,
+    minimum: false,
     oneToGo: false
   })
 
@@ -337,6 +339,11 @@ export function useCallouts() {
     if (!t.onGround && t.alt <= mda + 100 && dh === 0 && !al.above100mda) {
       playSound("100_above.ogg")
       al.above100mda = true
+    }
+
+    if (!t.onGround && t.alt <= mda && dh === 0 && !al.minimum) {
+      playSound("minimum.ogg")
+      al.minimum = true
     }
 
     if (!t.onGround && t.radioAlt <= dh + 100 && mda === 0 && !al.above100dh) {

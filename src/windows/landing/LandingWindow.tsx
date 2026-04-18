@@ -41,30 +41,7 @@ export function LandingWindow() {
       {/* Flaps + Anti Ice */}
 
       <div className="grid grid-cols-3 gap-2">
-        <div className="space-y-1">
-          <div className={labelRow}>
-            <Label htmlFor="flaps" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
-              Flaps
-            </Label>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-3.5 h-3.5 text-slate-400 cursor-help hover:text-cyan-400 transition-colors" />
-                </TooltipTrigger>
-                <TooltipContent className="text-xs max-w-[200px] bg-slate-800 border-slate-700">
-                  A300/A310 flaps are formatted as (Slats/Flaps)
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          <select id="flaps" name="flaps" value={landing.flaps} onChange={handleSelectChange} className={selectCls}>
-            <option value="3">20/20</option>
-            <option value="4">30/40</option>
-          </select>
-        </div>
-
+        
         <div className="space-y-1">
           <div className={labelRow}>
             <Label htmlFor="antiIce" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">

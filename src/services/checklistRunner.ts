@@ -395,11 +395,13 @@ async function executeNormalItem(item: ChecklistItem, index: number, signal: Abo
     if (item.baro_confirmation) {
       const t = useTelemetryStore.getState().telemetry
       if (t !== null) {
-        // cptBaro: 0 = inHg (e.g. 29.92 → "2992"), 1 = hPa (e.g. 1013.25 → "1013")
-        const value =
-          t.cptBaro === 1
-            ? Math.round(t.captAltimeterSettingMB ?? 0)
-            : Math.round((t.captAltimeterSettingHG ?? 0) * 100)
+        // Detect unit from the spoken number: 920-1060 → hPa, 2700-3200 → inHg.
+        const spokenMatch = s.match(/\b(\d{3,4})\b/)
+        const spokenNum = spokenMatch ? parseInt(spokenMatch[1], 10) : null
+        const isHpa = spokenNum !== null ? spokenNum >= 920 && spokenNum <= 1060 : t.cptBaro === 1
+        const value = isHpa
+          ? Math.round(t.captAltimeterSettingMB ?? 0)
+          : Math.round((t.captAltimeterSettingHG ?? 0) * 100)
         const filenames = [
           ...String(value)
             .split("")

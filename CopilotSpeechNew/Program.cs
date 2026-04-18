@@ -221,6 +221,9 @@ static void EmitSpeech(VoiceCommand command, float confidence)
 
         "speed" when command.Payload.TryGetValue("value", out var v) => $"{verb} speed {v}",
 
+        // Normalize altimeter so checklistRunner sees digits ("1016 set" / "2992 set")
+        "altimeter" when command.Payload.TryGetValue("raw", out var raw) => $"{raw} set",
+
         _ => command.Raw,
     };
 

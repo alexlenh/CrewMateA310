@@ -41,7 +41,6 @@ export function LandingWindow() {
       {/* Flaps + Anti Ice */}
 
       <div className="grid grid-cols-3 gap-2">
-        
         <div className="space-y-1">
           <div className={labelRow}>
             <Label htmlFor="antiIce" className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">

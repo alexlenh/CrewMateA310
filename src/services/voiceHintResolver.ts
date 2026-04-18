@@ -144,7 +144,7 @@ export function resolveVoiceHints(args: ResolveVoiceHintsArgs): VoiceHintPhase |
     return {
       id: "takeoff_thrust",
       title: "Takeoff",
-      phrases: ["stop"]
+      phrases: ["thrust srs heading", "stop"]
     }
   }
 

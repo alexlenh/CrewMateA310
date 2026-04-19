@@ -346,11 +346,8 @@ export function useCallouts() {
         }
 
         // 2. Minimums trigger: ONLY if mda or dh is actually set
-        if ((mda > 0 || dh > 0) && !al.minimum) {
-          const limit = dh > 0 ? dh : mda
-          const currentAlt = dh > 0 ? t.radioAlt : t.alt
-          
-          if (currentAlt <= limit) {
+        if (mda > 0 && dh === 0 && !al.minimum) {
+          if (t.alt <= mda) {
             playSound("minimum.ogg")
             al.minimum = true
           }

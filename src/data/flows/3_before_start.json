@@ -1,6 +1,6 @@
 {
-  "id": "before_pushback",
-  "name": "Before Pushback",
+  "id": "before_start",
+  "name": "Before Start",
   "steps": [
     {
       "label": "SET MCDU",

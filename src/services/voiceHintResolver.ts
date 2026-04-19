@@ -221,7 +221,7 @@ export function resolveVoiceHints(args: ResolveVoiceHintsArgs): VoiceHintPhase |
   }
 
   // After before_start flow done, checklist not yet called → call for before start
-  if (lastFl === "before_pushback" && lastCl !== "before_start" && ias <= TAXI_MAX_IAS) {
+  if (lastFl === "before_start" && lastCl !== "before_start" && ias <= TAXI_MAX_IAS) {
     return {
       id: "call_before_start_checklist",
       title: "Ready for before start",

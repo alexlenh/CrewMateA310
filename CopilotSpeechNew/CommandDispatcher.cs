@@ -356,7 +356,7 @@ private static VoiceCommand? LdgElev(string cval, string raw)
             // Flows
             [37] = "clear_left",
             [38] = "runway_entry_procedure",
-            [39] = "before_pushback_procedure",
+            [39] = "before_start_procedure",
             [40] = "clear_for_takeoff",
             // Shutdown
             // Flight controls

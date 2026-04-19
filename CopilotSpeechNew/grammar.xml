@@ -380,172 +380,125 @@
   <!-- ═══════════════════════════════════════════════════════════════════════════
        DISCRETE_COMMANDS  (no numeric value)
   ════════════════════════════════════════════════════════════════════════════ -->
-  <rule id="DISCRETE_COMMANDS">
+ <rule id="DISCRETE_COMMANDS">
     <one-of>
-      <!-- Gear -->
+      <!-- 1-9: Primary Flight Controls -->
       <item>gear up<tag>out.pid="1";</tag></item>
       <item>gear down<tag>out.pid="2";</tag></item>
-      <!-- Flaps -->
       <item>Slats retract<tag>out.pid="3";</tag></item>
       <item>flaps zero<tag>out.pid="4";</tag></item>
       <item>Slats extend<tag>out.pid="4";</tag></item>
       <item>flaps fifteen<tag>out.pid="5";</tag></item>
       <item>flaps twenty<tag>out.pid="6";</tag></item>
       <item>flaps fourty<tag>out.pid="7";</tag></item>
-      <!-- Autopilot -->
-      <item>autopilot on<tag>out.pid="8";</tag></item>
-      <item>autopilot one on<tag>out.pid="8";</tag></item>
-      <item>auto pilot on<tag>out.pid="8";</tag></item>
-      <item>auto pilot one on<tag>out.pid="8";</tag></item>
-      <item>autopilot off<tag>out.pid="9";</tag></item>
-      <item>auto pilot off<tag>out.pid="9";</tag></item>
-      <item>altitude pull<tag>out.pid="102";</tag></item>
-      <item>pull speed<tag>out.pid="104";</tag></item>
-      <item>engage heading<tag>out.pid="106";</tag></item>
-      <item>engage nav<tag>out.pid="107";</tag></item>
-      <item>arm nav<tag>out.pid="107";</tag></item>
-      <item>flight level pull<tag>out.pid="102";</tag></item>
-      <item>heading push<tag>out.pid="103";</tag></item>
-      <item>engage altitude hold<tag>out.pid="110";</tag></item>
-      <item>arm land<tag>out.pid="111";</tag></item>
-      <item>arm localizer<tag>out.pid="112";</tag></item>
-      <!-- Lights -->
-      <item>landing light on<tag>out.pid="12";</tag></item>
-      <item>takeoff light on<tag>out.pid="69";</tag></item>
-      <item>landing light off<tag>out.pid="13";</tag></item>
-      <item>strobe light on<tag>out.pid="14";</tag></item>
-      <item>strobe light auto<tag>out.pid="15";</tag></item>
-      <item>strobe light off<tag>out.pid="16";</tag></item>
-      <item>taxi light on<tag>out.pid="17";</tag></item>
-      <item>taxi light off<tag>out.pid="18";</tag></item>
-      <!-- Flight director -->
-      <item>flight director on<tag>out.pid="19";</tag></item>
-      <item>flight director off<tag>out.pid="20";</tag></item>
-      <!-- Checklists -->
-      <item>before start checklist to the line<tag>out.pid="22";</tag></item>
-      <item>before start checklist below the line<tag>out.pid="24";</tag></item>
-      <item>after start checklist<tag>out.pid="25";</tag></item>
-      <item>before takeoff checklist to the line<tag>out.pid="26";</tag></item>
-      <item>before takeoff checklist below the line<tag>out.pid="27";</tag></item>
-      <item>after takeoff climb checklist to the line<tag>out.pid="28";</tag></item>
-      <item>after takeoff climb checklist below the line<tag>out.pid="29";</tag></item>
-      <item>approach checklist<tag>out.pid="30";</tag></item>
-      <item>landing checklist<tag>out.pid="31";</tag></item>
-      <item>after landing checklist<tag>out.pid="23"</tag></item>
-      <item>cancel checklist<tag>out.pid="32";</tag></item>
-      <item>stop checklist<tag>out.pid="32";</tag></item>
-      <item>abort checklist<tag>out.pid="32";</tag></item>
-      <!-- Flows -->
-      <item>clear left<tag>out.pid="37";</tag></item>
-      <item>clear on the left<tag>out.pid="37";</tag></item>
-      <item>left side clear<tag>out.pid="37";</tag></item>
-      <item>clear left side<tag>out.pid="37";</tag></item>
-      <item>runway entry procedure<tag>out.pid="38";</tag></item>
-      <item>clear to line up<tag>out.pid="38";</tag></item>
-      <item>before start procedure<tag>out.pid="39"</tag></item>
-      <item>takeoff<tag>out.pid="40";</tag></item>
-      <!-- Prepare / setup -->
+      <item>go around flaps<tag>out.pid="8";</tag></item>
+
+      <item>landing light on<tag>out.pid="10";</tag></item>
+      <item>landing light off<tag>out.pid="11";</tag></item>
+      <item>takeoff light on<tag>out.pid="12";</tag></item>
+      <item>strobe light on<tag>out.pid="13";</tag></item>
+      <item>strobe light auto<tag>out.pid="14";</tag></item>
+      <item>strobe light off<tag>out.pid="15";</tag></item>
+      <item>taxi light on<tag>out.pid="16";</tag></item>
+      <item>taxi light off<tag>out.pid="17";</tag></item>
+      <item>flight director on<tag>out.pid="18";</tag></item>
+      <item>flight director off<tag>out.pid="19";</tag></item>
+
+      <item>parking checklist<tag>out.pid="20";</tag></item>
+      <item>before start checklist to the line<tag>out.pid="21";</tag></item>
+      <item>before start checklist below the line<tag>out.pid="22";</tag></item>
+      <item>after start checklist<tag>out.pid="23";</tag></item>
+      <item>before takeoff checklist to the line<tag>out.pid="24";</tag></item>
+      <item>before takeoff checklist below the line<tag>out.pid="25";</tag></item>
+      <item>after takeoff climb checklist to the line<tag>out.pid="26";</tag></item>
+      <item>after takeoff climb checklist below the line<tag>out.pid="27";</tag></item>
+      <item>approach checklist<tag>out.pid="28";</tag></item>
+      <item>landing checklist<tag>out.pid="29";</tag></item>
+      <item>after landing checklist<tag>out.pid="30";</tag></item>
+      <item>cancel checklist<tag>out.pid="31";</tag></item>
+
       <item>lets prepare the aircraft<tag>out.pid="33";</tag></item>
-      <item>lets prepare the flight<tag>out.pid="33";</tag></item>
-      <item>lets set up the aircraft<tag>out.pid="33";</tag></item>
-      <!-- Engine and apu start -->
-      <item>start engine two<tag>out.pid=34</tag></item>
-      <item>start engine one<tag>out.pid=35</tag></item>
-      <item>start the apu<tag>out.pid="36";</tag></item>
+      <item>start engine one<tag>out.pid="34";</tag></item>
+      <item>start engine two<tag>out.pid="35";</tag></item>
       <item>start apu<tag>out.pid="36";</tag></item>
-      <!-- Shutdown -->
+      <item>clear left<tag>out.pid="37";</tag></item>
+      <item>runway entry procedure<tag>out.pid="38";</tag></item>
+      <item>before start procedure<tag>out.pid="39";</tag></item>
+      <item>takeoff<tag>out.pid="40";</tag></item>
+      <item>abort takeoff<tag>out.pid="41";</tag></item>
+      <item>continue<tag>out.pid="42";</tag></item>
       <item>shutdown procedure<tag>out.pid="43";</tag></item>
-      <item>shutdown<tag>out.pid="43";</tag></item>
-      <!-- Flight controls -->
       <item>flight controls check<tag>out.pid="44";</tag></item>
-      <!-- Anti ice -->
-      <item>wing anti ice on<tag>out.pid="45";</tag></item>
-      <item>wing anti ice off<tag>out.pid="46";</tag></item>
-      <item>engine anti ice on<tag>out.pid="47";</tag></item>
-      <item>engine anti ice off<tag>out.pid="48";</tag></item>
-      <!-- Wipers -->
-      <item>wipers off<tag>out.pid="49";</tag></item>
-      <item>wipers slow<tag>out.pid="50";</tag></item>
-      <item>wipers fast<tag>out.pid="51";</tag></item>
-      <!-- Seat belts -->
-      <item>seat belts on<tag>out.pid="55";</tag></item>
-      <item>seat belts off<tag>out.pid="56";</tag></item>
-      <!-- Parking -->
-      <item>chocks in place<tag>out.pid="58";</tag></item>
-      <item>parking brake on<tag>out.pid="59";</tag></item>
-      <item>chocks in and brakes on<tag>out.pid="59";</tag></item>
-      <!-- Cabin crew -->
-      <!-- Brake -->
-      <item>brake check<tag>out.pid="61";</tag></item>
-      <!-- Altimeter -->
+
+      <item>wing anti ice on<tag>out.pid="50";</tag></item>
+      <item>wing anti ice off<tag>out.pid="51";</tag></item>
+      <item>engine anti ice on<tag>out.pid="52";</tag></item>
+      <item>engine anti ice off<tag>out.pid="53";</tag></item>
+      <item>wipers off<tag>out.pid="54";</tag></item>
+      <item>wipers slow<tag>out.pid="55";</tag></item>
+      <item>wipers fast<tag>out.pid="56";</tag></item>
+      <item>seat belts on<tag>out.pid="57";</tag></item>
+      <item>seat belts off<tag>out.pid="58";</tag></item>
+      <item>chocks in place<tag>out.pid="59";</tag></item>
+      <item>parking brake on<tag>out.pid="60";</tag></item>
+      <item>arm slides<tag>out.pid="61";</tag></item>
+      <item>disarm slides<tag>out.pid="62";</tag></item>
+      <item>brake check<tag>out.pid="63";</tag></item>
       <item>set standard<tag>out.pid="64";</tag></item>
-      <!-- Generic responses / checklist replies -->
-      <item>completed<tag>out.pid="10";</tag></item>
-      <item>on and auto<tag>out.pid="57";</tag></item>
-      <item>up and neutral<tag>out.pid="21"</tag></item>
-      <item>standard set<tag>out.pid="41"</tag></item>
-      <item>low<tag>out.pid="42"</tag></item>
-      <item>mid<tag>out.pid="52"</tag></item>
-      <item>max<tag>out.pid="53"</tag></item>
-      <item>confirm<tag>out.pid="70";</tag></item>
-      <item>confirmed<tag>out.pid="70";</tag></item>
-      <item>negative<tag>out.pid="71";</tag></item>
-      <item>set<tag>out.pid="72";</tag></item>
-      <item>set and checked<tag>out.pid="72";</tag></item>
+
+      <item>completed<tag>out.pid="70";</tag></item>
+      <item>confirm<tag>out.pid="71";</tag></item>
+      <item>negative<tag>out.pid="72";</tag></item>
       <item>checked<tag>out.pid="73";</tag></item>
-      <item>check<tag>out.pid="73";</tag></item>
-      <item>on<tag>out.pid="74";</tag></item>
-      <item>off<tag>out.pid="75";</tag></item>
-      <item>check zero<tag>out.pid="54";</tag></item>
-      <item>armed<tag>out.pid="76";</tag></item>
-      <item>t a r a<tag>out.pid="77";</tag></item>
-      <item>normal<tag>out.pid="78";</tag></item>
-      <item>normal and on<tag>out.pid="78";</tag></item>
-      <item>disarmed<tag>out.pid="11";</tag></item>
-      <item>retracted<tag>out.pid="79";</tag></item>
-      <item>down<tag>out.pid="80";</tag></item>
-      <item>secured<tag>out.pid="81";</tag></item>
-      <item>secure<tag>out.pid="81";</tag></item>
-      <item>removed<tag>out.pid="82";</tag></item>
-      <item>released<tag>out.pid="83";</tag></item>
-      <item>received<tag>out.pid="84";</tag></item>
-      <item>started<tag>out.pid="85";</tag></item>
-      <item>to be started<tag>out.pid="89";</tag></item>
-      <item>running<tag>out.pid="86";</tag></item>
-      <item>advised<tag>out.pid="87";</tag></item>
-      <item>cont relight<tag>out.pid="88";</tag></item>
-      <item>medium<tag>out.pid="90";</tag></item>
-      <item>check and read<tag>out.pid="91";</tag></item>
-      <item>engine anti ice is on<tag>out.pid="92";</tag></item>
-      <item>on<tag>out.pid="93";</tag></item>
-      <item>on supplied by apu<tag>out.pid="94";</tag></item>
-      <item>fifteen zero<tag>out.pid="95";</tag></item>
-      <item>fifteen<tag>out.pid="96";</tag></item>
-      <item>twenty<tag>out.pid="97";</tag></item>
-      <item>closed<tag>out.pid="98";</tag></item>
-      <item>chocks in place<tag>out.pid="66"</tag></item>
-      <item>parking brake on<tag>out.pid="66"</tag></item>
-      <item>chocks in and brakes on<tag>out.pid="66"</tag></item>
-      <!-- Go around / abort / land -->
-      <item>go around flaps<tag>out.pid="99";</tag></item>
-      <item>abort takeoff<tag>out.pid="100";</tag></item>
-      <item>continue<tag>out.pid="101";</tag></item>
-      <item>stop<tag>out.pid="100";</tag></item>
-      <!-- Ground engineer -->
+      <item>set<tag>out.pid="74";</tag></item>
+      <item>on<tag>out.pid="75";</tag></item>
+      <item>off<tag>out.pid="76";</tag></item>
+      <item>armed<tag>out.pid="77";</tag></item>
+      <item>disarmed<tag>out.pid="78";</tag></item>
+      <item>on and auto<tag>out.pid="79";</tag></item>
+      <item>up and neutral<tag>out.pid="80";</tag></item>
+      <item>standard set<tag>out.pid="81";</tag></item>
+      <item>normal<tag>out.pid="82";</tag></item>
+      <item>secured<tag>out.pid="83";</tag></item>
+      <item>low<tag>out.pid="84";</tag></item>
+      <item>mid<tag>out.pid="85";</tag></item>
+      <item>max<tag>out.pid="86";</tag></item>
+      <item>check zero<tag>out.pid="87";</tag></item>
+      <item>retracted<tag>out.pid="88";</tag></item>
+      <item>down<tag>out.pid="89";</tag></item>
+      <item>removed<tag>out.pid="90";</tag></item>
+      <item>released<tag>out.pid="91";</tag></item>
+      <item>received<tag>out.pid="92";</tag></item>
+      <item>started<tag>out.pid="93";</tag></item>
+      <item>running<tag>out.pid="94";</tag></item>
+      <item>advised<tag>out.pid="95";</tag></item>
+      <item>closed<tag>out.pid="96";</tag></item>
+      <item>check and read<tag>out.pid="97"</tag></item>
+      <item>fourty<tag>out.pid="98";</tag></item>
+      <item>twenty<tag>out.pid="99"</tag></item>
+
+      <item>autopilot on<tag>out.pid="100";</tag></item>
+      <item>autopilot off<tag>out.pid="101";</tag></item>
+      <item>altitude pull<tag>out.pid="102";</tag></item>
+      <item>heading push<tag>out.pid="103";</tag></item>
+      <item>pull speed<tag>out.pid="104";</tag></item>
+      <item>engage heading<tag>out.pid="105";</tag></item>
+      <item>engage nav<tag>out.pid="106";</tag></item>
+      <item>engage altitude hold<tag>out.pid="107";</tag></item>
+      <item>arm land<tag>out.pid="108";</tag></item>
+      <item>arm localizer<tag>out.pid="109";</tag></item>
+
       <item>ground from cockpit<tag>out.pid="113";</tag></item>
-      <item>cockpit to ground<tag>out.pid="113";</tag></item>
-      <item>connect GPU<tag>out.pid="114";</tag></item>
       <item>connect ground power<tag>out.pid="114";</tag></item>
-      <item>disconnect GPU<tag>out.pid="115";</tag></item>
       <item>disconnect ground power<tag>out.pid="115";</tag></item>
-      <item>connect ASU<tag>out.pid="116";</tag></item>
       <item>connect air starter<tag>out.pid="116";</tag></item>
-      <item>disconnect ASU<tag>out.pid="117";</tag></item>
       <item>disconnect air starter<tag>out.pid="117";</tag></item>
+      <item>connect air conditioning<tag>out.pid="118";</tag></item>
+      <item>disconnect air conditioning<tag>out.pid="119";</tag></item>
       <item>disconnect all<tag>out.pid="120";</tag></item>
-      <item>disconnect all services<tag>out.pid="120";</tag></item>
     </one-of>
-  </rule>
+</rule>
+
 
   <!-- ═══════════════════════════════════════════════════════════════════════════
        SHARED VERB

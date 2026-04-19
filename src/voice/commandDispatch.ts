@@ -54,7 +54,7 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
 
   // ── Flaps ─────────────────────────────────────────────────────────────────
   slats_ret: () => setFlaps(0),
-  slats_ext: () => setFlaps(1),
+  slats_ext_zero: () => setFlaps(1),
   flaps_15: () => setFlaps(2),
   flaps_20: () => setFlaps(3),
   flaps_40: () => setFlaps(4),

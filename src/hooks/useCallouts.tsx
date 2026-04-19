@@ -341,7 +341,7 @@ export function useCallouts() {
       al.above100mda = true
     }
 
-    if (!t.onGround && t.alt <= mda && dh === 0 && !al.minimum) {
+    if (!t.onGround && t.alt <= mda && !al.minimum) {
       playSound("minimum.ogg")
       al.minimum = true
     }

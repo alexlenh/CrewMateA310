@@ -222,6 +222,7 @@ export function useCallouts() {
     const takeoffThrustTarget = getTakeoffThrustTarget(t)
     const mda = t.mda ?? 0
     const dh = t.dh ?? 0
+    const isCat3B = dh === 0 && mda === 0;
 
     if (!cabinReadyPrimed.current) {
       cabinReadyPrimed.current = true
@@ -336,20 +337,31 @@ export function useCallouts() {
       al.oneToGo = true
     }
 
-    if (!t.onGround && t.alt <= mda + 100 && dh === 0 && !al.above100mda) {
-      playSound("100_above.ogg")
-      al.above100mda = true
-    }
+      if (!t.onGround && !isCat3B) {
+        
+        // 1. MDA triggers: ONLY if mda is set (>0) and dh is not
+        if (mda > 0 && dh === 0 && t.alt <= mda + 100 && !al.above100mda) {
+          playSound("100_above.ogg")
+          al.above100mda = true
+        }
 
-    if (!t.onGround && t.alt <= mda && !al.minimum) {
-      playSound("minimum.ogg")
-      al.minimum = true
-    }
+        // 2. Minimums trigger: ONLY if mda or dh is actually set
+        if ((mda > 0 || dh > 0) && !al.minimum) {
+          const limit = dh > 0 ? dh : mda
+          const currentAlt = dh > 0 ? t.radioAlt : t.alt
+          
+          if (currentAlt <= limit) {
+            playSound("minimum.ogg")
+            al.minimum = true
+          }
+        }
 
-    if (!t.onGround && t.radioAlt <= dh + 100 && mda === 0 && !al.above100dh) {
-      playSound("100_above.ogg")
-      al.above100dh = true
-    }
+        // 3. DH trigger: ONLY if dh is set (>0)
+        if (dh > 0 && t.radioAlt <= dh + 100 && !al.above100dh) {
+          playSound("100_above.ogg")
+          al.above100dh = true
+        }
+      }
 
     // Transition altitude / level
     if (

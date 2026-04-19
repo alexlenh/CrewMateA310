@@ -473,7 +473,9 @@
       <item>running<tag>out.pid="94";</tag></item>
       <item>advised<tag>out.pid="95";</tag></item>
       <item>closed<tag>out.pid="96";</tag></item>
+      <item>check and read<tag>out.pid="97"</tag></item>
       <item>fourty<tag>out.pid="98";</tag></item>
+      <item>twenty<tag>out.pid="99"</tag></item>
 
       <item>autopilot on<tag>out.pid="100";</tag></item>
       <item>autopilot off<tag>out.pid="101";</tag></item>

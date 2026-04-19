@@ -138,6 +138,9 @@ export function useAutoFlows() {
       else if (!fl.climbTenK && !t.onGround && t.vs > 100 && p.alt < 10000 && t.alt >= 10000) {
         fl.climbTenK = true
         executeFlow("climb_ten_thousand_flow")
+      } else if (!fl.landing && !t.onGround && !p.flapsIndex && !p.landingGear && t.flapsIndex === 3 && t.landingGear) {
+        fl.landing = true
+        executeFlow("landing")
       }
 
       // Descend through 10,000 ft

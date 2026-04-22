@@ -65,7 +65,8 @@ export function useAutoFlows() {
     return useGoAroundStore.subscribe((s) => {
       if (s.count !== goAroundCount.current) {
         goAroundCount.current = s.count
-        // triggered.current.afterTakeoff = false  A310 has it's own go around flow, will be implemented later
+        triggered.current.afterTakeoffP1 = false
+        triggered.current.afterTakeoffP2 = false
       }
     })
   }, [])
@@ -115,7 +116,7 @@ export function useAutoFlows() {
 
     if (!isRunning) {
       // After Start: ignition knob 0 → 1 while on ground
-      if (!fl.afterStart && t.onGround && p.ignitionKnob < 3 && t.ignitionKnob === 3) {
+      if (!fl.afterStart && t.onGround && p.ignitionKnob !== 3 && t.ignitionKnob === 3) {
         fl.afterStart = true
         executeFlow("after_start")
       }

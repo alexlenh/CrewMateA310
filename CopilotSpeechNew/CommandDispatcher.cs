@@ -324,7 +324,7 @@ namespace VoiceSidecar
             [29] = "checklist_landing",
             [30] = "checklist_after_landing",
             [31] = "checklist_cancel",
-
+            [32] = "set_and_checked",
             // 33-49: Procedures & Engines
             [33] = "prepare_aircraft",
             [34] = "engine_start_1",
@@ -338,6 +338,7 @@ namespace VoiceSidecar
             [42] = "continue",
             [43] = "shutdown_procedure",
             [44] = "flight_controls_check",
+            [45] = "des_prep",
 
             // 50-69: Systems & Safety
             [50] = "wing_anti_ice_on",

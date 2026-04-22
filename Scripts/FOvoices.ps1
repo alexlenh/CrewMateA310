@@ -38,7 +38,8 @@ $phrases = @{
     "auto_brake"                           = "Auto brake"
     "before_start_checklist_completed"     = "Before start checklist completed"
     "cabin_landing"                        = "Cabin crew, please be seated for landing"
-    "cabin_ready"                          = "Cabin is ready"
+    "cabin_secure"                         = "Yeah? Ok. Captain, cabin is secured"
+    "cabin_not_secure"                     = "Cabin is NOT secured"
     "cabin_takeoff"                        = "Cabin crew, please be seated for takeoff"
     "check"                                = "Check"
     "check_beacon"                         = "Beacon is not on"
@@ -155,6 +156,7 @@ $phrases = @{
     "packs"                                = "Packs"
     "go_around_alt"                        = "Go around altitude"
     "feet_set"                             = "feet set"
+    "100_above"                            = "one hundred above"
 }
 # Derive folder name from voice: "en-US-JennyNeural" -> "Jenny"
 

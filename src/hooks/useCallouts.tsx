@@ -50,13 +50,15 @@ interface PreviousValues {
   dh: number
 }
 
-const THRUST_SET_MARGIN = 3
+const THRUST_SET_MARGIN = 1
 
 const getTakeoffThrustTarget = (t: Telemetry) => {
-  if ((t.iniFlexTemperature ?? 0) > 1) {
-    return t.iniThrustFlexN1 ?? 0
+  // A310 TRP_MODE: 5 = TOGA, 6 = FLEX
+  if (t.trp === 6) {
+    // FLEX mode - use flex thrust if flex temp is set (>1)
+    return (t.iniFlexTemperature ?? 0) > 1 ? (t.iniThrustFlexN1 ?? 0) : (t.iniThrustTogaN1 ?? 0)
   }
-
+  // TOGA mode (5) or unknown mode
   return t.iniThrustTogaN1 ?? 0
 }
 
@@ -317,12 +319,12 @@ export function useCallouts() {
 
     // Ten thousand feet
     if (!t.onGround && t.vs > 100 && !al.tenThousandClimb && crossedUp(p.alt, t.alt, 10000)) {
-      playSound(t.transitionAltitude < 10000 ? "fl_100.ogg" : "ten_thousand.ogg")
+      playSound(transitionAltitude < 10000 ? "fl_100.ogg" : "ten_thousand.ogg")
       al.tenThousandClimb = true
     }
 
     if (!t.onGround && t.vs < -100 && !al.tenThousandDescent && crossedDown(p.alt, t.alt, 10000)) {
-      playSound(t.transitionLevel > 10000 ? "fl_100.ogg" : "ten_thousand.ogg")
+      playSound(transitionLevel > 10000 ? "fl_100.ogg" : "ten_thousand.ogg")
       al.tenThousandDescent = true
     }
 
@@ -344,7 +346,6 @@ export function useCallouts() {
         al.above100mda = true
       }
 
-      // 2. Minimums trigger: ONLY if mda or dh is actually set
       if (mda > 0 && dh === 0 && !al.minimum) {
         if (t.alt <= mda) {
           playSound("minimum.ogg")

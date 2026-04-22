@@ -1,6 +1,7 @@
 import { simvarGet, simvarSet } from "@/API/simvarApi"
 import { getFlowById, resolveFlow } from "@/services/flowLoader"
 import { playSound, isSoundPlaying } from "@/services/playSounds"
+import { useCabinReadyTimerStore } from "@/store/cabinReadyTimerStore"
 import { useFlowStore } from "@/store/flowStore"
 import { usePerformanceStore } from "@/store/performanceStore"
 import { useSettingsStore } from "@/store/settingsStore"
@@ -166,6 +167,9 @@ function startPostLandingTimer(delayMinutes: number): void {
   }, delayMs)
 }
 
+// Blocked flows while cabin ready timer is running
+const BLOCKED_FLOWS = new Set(["before_takeoff"])
+
 export async function executeFlow(flowId: string): Promise<void> {
   const store = useFlowStore.getState()
 
@@ -177,6 +181,14 @@ export async function executeFlow(flowId: string): Promise<void> {
   const rawFlow = getFlowById(flowId)
   if (!rawFlow) {
     store.setError(`Flow "${flowId}" not found`)
+    return
+  }
+
+  // Block before takeoff flow if cabin ready timer is running
+  const cabinTimer = useCabinReadyTimerStore.getState()
+  if (cabinTimer.isRunning && BLOCKED_FLOWS.has(flowId)) {
+    playSound("cabin_not_secure.ogg")
+    store.setError("Cannot start before takeoff flow - cabin ready timer is running")
     return
   }
 
@@ -233,12 +245,6 @@ export async function executeFlow(flowId: string): Promise<void> {
         continue
       }
 
-      if (step.sound) {
-        await waitForSoundFinished()
-        await playSound(step.sound)
-        await waitForSoundFinished()
-      }
-
       const currentValue = await readValue(step.read)
       checkAbort(signal)
 
@@ -276,6 +282,14 @@ export async function executeFlow(flowId: string): Promise<void> {
 
       if (step.skip_verify) {
         setStepStatus(i, "done")
+        // Play sound_after_execute if step was successful (after 2 second delay)
+        if (step.sound_after_execute) {
+          await abortableSleep(2000, signal)
+          await waitForSoundFinished()
+          await playSound(step.sound_after_execute)
+          await waitForSoundFinished()
+          checkAbort(signal)
+        }
       } else {
         setStepStatus(i, "verifying")
         let verified = false
@@ -292,6 +306,15 @@ export async function executeFlow(flowId: string): Promise<void> {
         setStepStatus(i, verified ? "done" : "failed")
         if (!verified) {
           console.warn(`[FlowRunner] Step "${step.label}" verification failed (expected ${expectedValue})`)
+        } else {
+          // Play sound_after_execute if step was successful (after 2 second delay)
+          if (step.sound_after_execute) {
+            await abortableSleep(2000, signal)
+            await waitForSoundFinished()
+            await playSound(step.sound_after_execute)
+            await waitForSoundFinished()
+            checkAbort(signal)
+          }
         }
       }
 

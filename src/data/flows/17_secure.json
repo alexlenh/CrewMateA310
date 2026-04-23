@@ -1,0 +1,78 @@
+{
+  "id": "secure",
+  "name": "Securing aircraft",
+  "steps": [
+    {
+      "label": "IRS 1 off",
+      "read": "(L:A310_IRS1_STATE)",
+      "on": "0 (L:A310_IRS1_STATE)",
+      "expect": 0
+    },
+    {
+      "label": "IRS 2 off",
+      "read": "(L:A310_IRS2_STATE)",
+      "on": "0 (L:A310_IRS2_STATE)",
+      "expect": 0
+    },
+    {
+      "label": "IRS 3 off",
+      "read": "(L:A310_IRS3_STATE)",
+      "on": "0 (L:A310_IRS3_STATE)",
+      "expect": 0
+    },
+    {
+      "label": "Oxy off",
+      "read": "(L:A310_OXYGEN_LOW_PRESSURE_SUPPLY)",
+      "on": "0 (>L:A310_OXYGEN_LOW_PRESSURE_SUPPLY)",
+      "expect": 0
+    },
+    {
+      "label": "Lights off",
+      "read": "(L:A310_NAV_LOGO_LIGHT_SWITCH)",
+      "on": "0 (>L:A310_NAV_LOGO_LIGHT_SWITCH)",
+      "expect": 0
+    },
+    {
+      "label": "Lights off",
+      "read": "(L:A310_POTENTIOMETER_24)",
+      "on": "2 (>L:A310_POTENTIOMETER_24)",
+      "expect": 2
+    },
+    {
+      "label": "APU Bleed off",
+      "read": "(L:A310_apu_bleed)",
+      "on": "0 (>L:A310_apu_bleed)",
+      "expect": 0
+    },
+    {
+      "label": "APU off",
+      "read": "(L:A310_apu_master_switch)",
+      "on": "0 (>L:A310_apu_master_switch)",
+      "expect": 0
+    },
+    {
+      "label": "Emer light disarm",
+      "read": "(L:A310_EMER_EXIT_SWITCH)",
+      "on": "2 (>L:A310_EMER_EXIT_SWITCH)",
+      "expect": 2
+    },
+    {
+      "label": "Batteries off",
+      "read": "(L:A310_BAT1_ON)",
+      "on": "0 (>L:A310_BAT1_ON)",
+      "expect": 0
+    },
+    {
+      "label": "Batteries off",
+      "read": "(L:A310_BAT2_ON)",
+      "on": "0 (>L:A310_BAT2_ON)",
+      "expect": 0
+    },
+    {
+      "label": "Batteries off",
+      "read": "(L:A310_BAT3_ON)",
+      "on": "0 (>L:A310_BAT3_ON)",
+      "expect": 0
+    }
+  ]
+}

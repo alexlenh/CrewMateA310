@@ -5,6 +5,7 @@ import descTenThousand from "@/data/flows/13_desc_ten_thousand_flow.json"
 import landing from "@/data/flows/14_landing.json"
 import afterLanding from "@/data/flows/15_after_landing.json"
 import parking from "@/data/flows/16_shutdown.json"
+import secure from "@/data/flows/17_secure.json"
 import prelimCockpitPrep from "@/data/flows/1_prelim_cockpit_prep.json"
 import cockpitPrep from "@/data/flows/2_cockpit_prep.json"
 import beforeStart from "@/data/flows/3_before_start.json"
@@ -33,7 +34,8 @@ export const allFlows: Flow[] = [
   descTenThousand,
   landing,
   afterLanding,
-  parking
+  parking,
+  secure
 ] as Flow[]
 
 export function getFlowById(id: string): Flow | undefined {

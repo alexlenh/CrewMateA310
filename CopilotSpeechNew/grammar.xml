@@ -514,6 +514,8 @@
       <item>on supplied by apu<tag>out.pid="125";</tag></item>
       <item>to be started<tag>out.pid="126";</tag></item>
       <item>chocks in and brakes on<tag>out.pid="127";</tag></item>
+      <item>secure the aircraft<tag>out.pid="128";</tag></item>
+      <item>securing aircraft checklist<tag>out.pid="129";</tag></item>
     </one-of>
   </rule>
 

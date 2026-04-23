@@ -1,5 +1,6 @@
 import afterLanding from "@/data/checklists/10_after_landing.json"
 import parking from "@/data/checklists/11_parking.json"
+import secure from "@/data/checklists/12_secure.json"
 import beforeStartP1 from "@/data/checklists/1_before_start_to_the_line.json"
 import beforeStartP2 from "@/data/checklists/2_before_start_below_the_line.json"
 import afterStart from "@/data/checklists/3_after_start.json"
@@ -22,7 +23,8 @@ export const allChecklists: Checklist[] = [
   approach,
   landing,
   afterLanding,
-  parking
+  parking,
+  secure
 ] as Checklist[]
 
 export function getChecklistById(id: string): Checklist | undefined {

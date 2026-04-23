@@ -240,6 +240,7 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
   clear_for_takeoff: () => executeFlow("takeoff"),
   before_start_procedure: () => executeFlow("before_start"),
   des_prep: () => executeFlow("des_prep"),
+  secure_aircraft: () => executeFlow("secure"),
 
   // ── Checklists ────────────────────────────────────────────────────────────
   checklist_before_startP1: () => executeChecklist("before_start_to_the_line"),
@@ -253,6 +254,7 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
   checklist_approach: () => executeChecklist("approach"),
   checklist_landing: () => executeChecklist("landing"),
   checklist_parking: () => executeChecklist("parking"),
+  checklist_secure: () => executeChecklist("secure"),
   checklist_cancel: () => abortChecklist(),
 
   // ── RTO / Continue  ─────────────────────────────────────

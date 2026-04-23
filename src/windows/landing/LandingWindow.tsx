@@ -128,6 +128,7 @@ export function LandingWindow() {
             type="number"
             min={1000}
             max={20000}
+            step={100}
             id="missedAltitude"
             name="missedAltitude"
             value={landing.missedAltitude}

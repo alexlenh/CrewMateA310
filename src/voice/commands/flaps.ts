@@ -18,7 +18,7 @@ const keyEventMap: Record<number, string> = {
 }
 
 const soundMap: Record<number, string> = {
-  0: "slats_ret.ogg",
+  0: "slats_retr.ogg",
   1: "flaps_0.ogg",
   2: "flaps_15.ogg",
   3: "flaps_20.ogg",

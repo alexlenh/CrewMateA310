@@ -262,6 +262,13 @@ export async function executeFlow(flowId: string): Promise<void> {
       await writeValue(step.on)
       checkAbort(signal)
 
+      if (step.sound_on_execute) {
+        await waitForSoundFinished()
+        await playSound(step.sound_on_execute)
+        await waitForSoundFinished()
+        checkAbort(signal)
+      }
+
       if (step.hold_ms) {
         await abortableSleep(step.hold_ms, signal)
         const releaseExpr = step.on.replace(/^\d+\s+/, "0 ")
@@ -271,13 +278,6 @@ export async function executeFlow(flowId: string): Promise<void> {
 
       if (step.wait_ms) {
         await abortableSleep(step.wait_ms, signal)
-      }
-
-      if (step.sound_on_execute) {
-        await waitForSoundFinished()
-        await playSound(step.sound_on_execute)
-        await waitForSoundFinished()
-        checkAbort(signal)
       }
 
       if (step.skip_verify) {

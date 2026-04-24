@@ -271,7 +271,7 @@ export async function executeFlow(flowId: string): Promise<void> {
 
       if (step.hold_ms) {
         await abortableSleep(step.hold_ms, signal)
-        const releaseExpr = step.on.replace(/^\d+\s+/, "0 ")
+        const releaseExpr = step.on.replace(/^-?\d+\s+/, "0 ")
         await writeValue(releaseExpr)
         checkAbort(signal)
       }

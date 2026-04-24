@@ -215,7 +215,6 @@ export const discreteCommandMap: Record<string, () => void | Promise<void>> = {
     await delay(1000)
     await playSound("ready.ogg")
     await flightControlsCheck()
-    await opencloseFCTLECAM(1)
   },
 
   // ── Preflight timer ───────────────────────────────────────────────────────
